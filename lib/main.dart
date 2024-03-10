@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
 
       builder: (context, child) => Directionality(
         textDirection: TextDirection.rtl,
-       child: child!),
+       child: Material(child:child!)),
 
       home:const EnterPage()
     );
@@ -25,26 +25,7 @@ class MyApp extends StatelessWidget {
 
 
 
-class BudgetHomePage extends StatefulWidget {
-  const BudgetHomePage({super.key, this.userName});
-  final userName;
-  @override
-  State<BudgetHomePage> createState() => _BudgetHomePageState();
-}
 
-class _BudgetHomePageState extends State<BudgetHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.amberAccent,
-        title: Center(child: Text("! שלום לך ${widget.userName}")),
-      ),
-      body: const MyMainPage(),
-      drawer: const Column(children: [Text("Bottom")]),
-    );
-  }
-}
 
 
 

@@ -74,10 +74,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
     _registrationStatus = ' !ההרשמה עברה בהצלחה ';
   });
   Future.delayed(const Duration(seconds: 2), () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const MyMainPage()),
-    );
   });
     } else if (response.statusCode == 409) {
       setState(() {

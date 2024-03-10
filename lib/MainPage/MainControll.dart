@@ -4,16 +4,27 @@ import "ViewAccount.dart";
 import "newTransaction.dart";
 
 class MyMainPage extends StatefulWidget {
-  const MyMainPage({super.key});
+   final Map<String, dynamic> userData; 
+  const MyMainPage({super.key, required this.userData}) ;
   @override
   State<MyMainPage> createState() => _MyMainPageState();
 }
 
 class _MyMainPageState extends State<MyMainPage> {
+
   @override
+  
   Widget build(BuildContext context) {
+    
     return Scaffold(
-      appBar: AppBar(title: const Center(child: Text("? מה תרצה לבצע היום  "))),
+      appBar: AppBar(
+  title: Center(
+    child: Text(
+      " שלום לך  ${widget.userData['user']['name']}",
+      textAlign: TextAlign.center,
+    ),
+  ),
+),
       body: Container(
           color: Colors.blue,
           height: 500,
@@ -21,13 +32,14 @@ class _MyMainPageState extends State<MyMainPage> {
             crossAxisCount: 2,
             childAspectRatio: 1,
             children: [
+              
               OptionCard(
                 title: "צפייה ביתרת החשבון",
                 icon: Icons.account_balance_wallet,
                 onTap: () {
                        Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => AddTransactionPage()),
+                      MaterialPageRoute(builder: (context) => IncomeEntryWidget()),
                     );
                 },
               ),
@@ -37,41 +49,10 @@ class _MyMainPageState extends State<MyMainPage> {
                 onTap: () {
                        Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => AddTransactionPage()),
+                      MaterialPageRoute(builder: (context) => IncomeEntryWidget()),
                     );
                 },
-              ),
-              OptionCard(
-                title: 'דו"ח סיכום חודשי',
-                icon: Icons.account_box,
-                onTap: () {
-                       Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AddTransactionPage()),
-                    );
-                },
-              ),
-              OptionCard(
-                title: " התראות תקציב ",
-                icon: Icons.punch_clock_rounded,
-                onTap: () {
-                       Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AddTransactionPage()),
-                    );
-                },
-              ),
-              OptionCard(
-                  title: " ניהול תקציב ",
-                  icon: Icons.account_balance,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AddTransactionPage()),
-                    );
-                  },
-                ),
-         
+              ),        
             ],
           ))),
     );

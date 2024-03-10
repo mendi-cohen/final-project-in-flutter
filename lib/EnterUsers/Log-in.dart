@@ -1,41 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../MainPage/MainControll.dart';
 
 class LoginPage extends StatefulWidget {
+  final Function(Map<String, dynamic>) onSuccess;
+  const LoginPage({super.key, required this.onSuccess}); 
+
   @override
-  _LoginPageState createState() => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
-  List<String> _storedPasswords = [];
 
   @override
   void initState() {
     super.initState();
-    _fetchStoredPasswords();
   }
 
   Future<void> _fetchStoredPasswords() async {
     final url = Uri.parse('http://10.0.2.2:3007/enterUser');
+    final password = _passwordController.text;
 
-    final response = await http.get(url);
-
+    final response = await http.post(
+      url,
+      body: {'password': password},
+    );
     if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
-
-      List<String> passwords = [];
-      for (var user in data) {
-        passwords.add(user['password']);
-      }
-
+      final userData = json.decode(response.body); 
+      widget.onSuccess(userData); 
+      MyMainPage(userData: userData);
       setState(() {
-        _storedPasswords = passwords;
-        print(_storedPasswords);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => MyMainPage(userData: userData)),
+        );
       });
     } else {
-      throw Exception('Failed to fetch stored passwords');
+      setState(() {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(' ההרשמה נכשלה!'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      });
     }
   }
 
@@ -60,25 +70,10 @@ class _LoginPageState extends State<LoginPage> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  final enteredPassword = _passwordController.text;
-                  print(enteredPassword);
-                  if (_storedPasswords.contains(enteredPassword)) {
-                         ScaffoldMessenger.of(context).showSnackBar(
-                     const SnackBar(
-                        content: Text('סיסמה נכונה!!!!!!!!!!!!!!!!'),
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
-                  } else {
-                    // Password is incorrect
-                    // Handle incorrect password logic here
-                    ScaffoldMessenger.of(context).showSnackBar(
-                     const SnackBar(
-                        content: Text('סיסמה שגויה'),
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
-                  }
+                  _fetchStoredPasswords();
+                  setState(() {
+                    _passwordController.text = '';
+                  });
                 },
                 child: const Text('כניסה'),
               ),
