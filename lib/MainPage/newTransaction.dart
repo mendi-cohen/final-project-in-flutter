@@ -1,6 +1,11 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
 
 class IncomeEntryWidget extends StatefulWidget {
+    final Map<String, dynamic> userData; 
+  const IncomeEntryWidget({super.key, required this.userData}) ;
   @override
   _IncomeEntryWidgetState createState() => _IncomeEntryWidgetState();
 }
@@ -12,46 +17,50 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _buildTextField(
-            controller: _amountController,
-            labelText: 'סכום',
-            hintText: 'הכנס סכום',
-            keyboardType: TextInputType.number,
-          ),
-          SizedBox(height: 10),
-          _buildTextField(
-            controller: _sourceController,
-            labelText: 'מקור ההכנסה ',
-            hintText: 'הכנס מקור הכסף ',
-          ),
-          SizedBox(height: 10),
-          Row(
-            children: [
-              Checkbox(
-                value: _isMonthly,
-                onChanged: (value) {
-                  setState(() {
-                    _isMonthly = value ?? false;
-                  });
-                },
-              ),
-              Text('הכנסה חודשית קבועה'),
-            ],
-          ),
-          SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: () {
-              // כאן נוסיף פונקציה שתעביר את הנתונים לדטה בייס
-              _submitDataToDatabase();
-            },
-            child: Text('הכנס '),
-          ),
-        ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('  שלום לך ${widget.userData['user']['name']} מה תרצה להכניס'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildTextField(
+              controller: _amountController,
+              labelText: 'סכום',
+              hintText: 'הכנס סכום',
+              keyboardType: TextInputType.number,
+            ),
+            SizedBox(height: 10),
+            _buildTextField(
+              controller: _sourceController,
+              labelText: 'מקור ההכנסה ',
+              hintText: 'הכנס מקור הכסף ',
+            ),
+            SizedBox(height: 10),
+            Row(
+              children: [
+                Checkbox(
+                  value: _isMonthly,
+                  onChanged: (value) {
+                    setState(() {
+                      _isMonthly = value ?? false;
+                    });
+                  },
+                ),
+                Text('הכנסה חודשית קבועה'),
+              ],
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                _submitDataToDatabase();
+              },
+              child: Text('הכנס'),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -75,22 +84,32 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
     );
   }
 
-  void _submitDataToDatabase() {
-    // כאן יש להוסיף את הפונקציה שתעביר את הנתונים לדטה בייס
-    // לדוגמה:
-    final amount = double.parse(_amountController.text);
-    final source = _sourceController.text;
-    final isMonthly = _isMonthly;
+  Future<void> _submitDataToDatabase() async {
+  final url = Uri.parse('http://10.0.2.2:3007/income/sendincome');
 
-    // כאן יש להעביר את הנתונים לדטה בייס
-    // לדוגמה:
-    // DatabaseService.submitIncomeData(amount, source, isMonthly);
+  final amount = _amountController.text;
+  final source = _sourceController.text;
+  final isMonthly = _isMonthly.toString(); 
 
-    // אחרי העברת הנתונים, ניתן לאפס את השדות
+final response = await http.post(
+  url,
+  headers: {"Content-Type": "application/json"},
+  body: jsonEncode({
+    'income_value': amount,
+    'source': source,
+    'monstli': isMonthly,
+    'user_id': widget.userData['user']['id']
+  }),
+);
+
+  if (response.statusCode == 200) {
+    print("Success!!!!!!!!!!!! ${widget.userData}");
     _amountController.clear();
     _sourceController.clear();
     setState(() {
       _isMonthly = false;
     });
   }
+}
+
 }

@@ -39,7 +39,7 @@ class _MyMainPageState extends State<MyMainPage> {
                 onTap: () {
                        Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => IncomeEntryWidget()),
+                      MaterialPageRoute(builder: (context) => IncomeEntryWidget(userData:widget.userData)),
                     );
                 },
               ),
@@ -49,7 +49,7 @@ class _MyMainPageState extends State<MyMainPage> {
                 onTap: () {
                        Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => IncomeEntryWidget()),
+                      MaterialPageRoute(builder: (context) => IncomeEntryWidget(userData:widget.userData)),
                     );
                 },
               ),        

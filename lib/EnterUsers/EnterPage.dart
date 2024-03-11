@@ -18,7 +18,8 @@ class _EnterState extends State<EnterPage> {
         width: 500,
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: NetworkImage('https://th.bing.com/th/id/OIG1.WPuag1a7wiT_PyIpmIUq?pid=ImgGn'),
+            // image: NetworkImage('https://th.bing.com/th/id/OIG1.WPuag1a7wiT_PyIpmIUq?pid=ImgGn'),
+            image: AssetImage('assets/images/image-enterPage.jpg'),
             fit: BoxFit.cover,
           ),
         ),
@@ -73,7 +74,7 @@ class _EnterState extends State<EnterPage> {
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                       padding:const EdgeInsets.symmetric(horizontal: 130, vertical: 20),
+                       padding:const EdgeInsets.symmetric(horizontal: 130, vertical: 10),
                       elevation: 5,
                       shadowColor: Colors.grey,
                       shape: RoundedRectangleBorder(
