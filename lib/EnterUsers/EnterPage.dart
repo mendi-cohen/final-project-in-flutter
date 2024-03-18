@@ -10,7 +10,6 @@ class EnterPage extends StatefulWidget {
 }
 
 class _EnterState extends State<EnterPage> {
-  bool _isLoginFormVisible = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +17,6 @@ class _EnterState extends State<EnterPage> {
         width: 500,
         decoration: const BoxDecoration(
           image: DecorationImage(
-            // image: NetworkImage('https://th.bing.com/th/id/OIG1.WPuag1a7wiT_PyIpmIUq?pid=ImgGn'),
             image: AssetImage('assets/images/image-enterPage.jpg'),
             fit: BoxFit.cover,
           ),
@@ -26,81 +24,101 @@ class _EnterState extends State<EnterPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-           Padding(
-  padding: const EdgeInsets.all(8.0),
-  child: ElevatedButton(
-    onPressed: () {
-      Navigator.push(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (_, __, ___) => RegistrationForm(),
-          transitionsBuilder: (_, animation, __, child) {
-            return SlideTransition(
-              
-              position: Tween<Offset>(
-                begin: Offset(0, -1),
-                end: Offset.zero,
-              ).animate(animation),
-              child: child,
-              
-            );
-          },
-        ),
-      );
-    },
-    style: ElevatedButton.styleFrom(
-      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-      elevation: 5,
-      shadowColor: Colors.grey,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30),
-      ),
-    ),
-    child: const Text(
-      "הרשמה",
-      style: TextStyle(fontSize: 20),
-    ),
-  ),
-),
-            Expanded(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _isLoginFormVisible = !_isLoginFormVisible;
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                       padding:const EdgeInsets.symmetric(horizontal: 130, vertical: 10),
-                      elevation: 5,
-                      shadowColor: Colors.grey,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50),
-                      ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (_, __, ___) => RegistrationForm(),
+                      transitionsBuilder: (_, animation, __, child) {
+                        return SlideTransition(
+                          position: Tween<Offset>(
+                            begin: const Offset(0, -1),
+                            end: Offset.zero,
+                          ).animate(animation),
+                          child: child,
+                        );
+                      },
                     ),
-                    child: const Text(
-                      "כניסה",
-                      style: TextStyle(fontSize: 30),
-                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                  backgroundColor: Colors.blue,
+                  elevation: 10,
+                  shadowColor: Colors.grey,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
                   ),
+                ),
+                child: const Text(
+                  'הרשמה',
+                  style: TextStyle(
+                      fontSize: 25,
+                      color: Colors.white,
+                      ), 
                 ),
               ),
             ),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 500),
-              height: _isLoginFormVisible
-                  ? MediaQuery.of(context).size.height * 0.3
-                  : 0,
-              color: Colors.blue,
-              child: Center(child: LoginPage(onSuccess: (userData) {
-                setState(() {
-                  print("Welcome: ${userData}");
-                  _isLoginFormVisible = false;
-                });
-              })),
+            MediaQueryTitle(),
+            Expanded(
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: ElevatedButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        backgroundColor: Color.fromARGB(255, 82, 188, 230),
+                        title: const Center(
+                            child: Text(
+                          'כניסה',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                          ),
+                        )),
+                        content: LoginPage(onSuccess: (userData) => userData),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text(
+                              'סגור',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 130, vertical: 24),
+                    backgroundColor: Colors.blue,
+                    elevation: 5,
+                    shadowColor: Colors.grey,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ), // צבע רקע של הכפתור
+                  ),
+                  child: const Text(
+                    'כניסה',
+                    style: TextStyle(
+                        fontSize: 25,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold), // צבע וגודל טקסט
+                  ),
+                ),
+              ),
             ),
           ],
         ),

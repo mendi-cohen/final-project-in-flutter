@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import "../MainCards.dart";
-import "ViewAccount.dart";
-import "newTransaction.dart";
+import "newPool.dart";
+import "newIncome.dart";
 
 class MyMainPage extends StatefulWidget {
    final Map<String, dynamic> userData; 
@@ -26,20 +26,24 @@ class _MyMainPageState extends State<MyMainPage> {
   ),
 ),
       body: Container(
-          color: Colors.blue,
-          height: 500,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/mainImage.jpeg'),
+            fit: BoxFit.cover,
+          ),
+        ),
           child:Center(child:  GridView.count(
             crossAxisCount: 2,
             childAspectRatio: 1,
             children: [
               
               OptionCard(
-                title: "צפייה ביתרת החשבון",
+                title: " הכנסות  ",
                 icon: Icons.account_balance_wallet,
                 onTap: () {
                        Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => IncomeEntryWidget(userData:widget.userData)),
+                      MaterialPageRoute(builder: (context) =>  IncomeEntryWidget(userData:widget.userData)),
                     );
                 },
               ),
@@ -49,7 +53,7 @@ class _MyMainPageState extends State<MyMainPage> {
                 onTap: () {
                        Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => IncomeEntryWidget(userData:widget.userData)),
+                      MaterialPageRoute(builder: (context) => PoolWidget(userData:widget.userData)),
                     );
                 },
               ),        
