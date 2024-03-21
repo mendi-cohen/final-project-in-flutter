@@ -1,25 +1,24 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'dart:convert';
 import '../Services/All.dart';
 import'../Services/Dialog.dart';
 
 
-class PoolWidget extends StatefulWidget {
+class CharidyWidget extends StatefulWidget {
   final Map<String, dynamic> userData;
-  const PoolWidget({super.key, required this.userData });
+  const CharidyWidget({super.key, required this.userData});
   @override
-  poolWidgetState createState() => poolWidgetState();
+  _CharidyWidgetState createState() => _CharidyWidgetState();
 }
 
-class poolWidgetState extends State<PoolWidget> {
+class _CharidyWidgetState extends State<CharidyWidget> {
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _sourceController = TextEditingController();
   bool _isMonthly = false;
+  bool _isMaaserSelected = false;
   List<dynamic> dataList = [];
-
-
 
   Widget _buildTextField({
     required TextEditingController controller,
@@ -53,24 +52,22 @@ class poolWidgetState extends State<PoolWidget> {
     );
   }
 
- 
-
   @override
   void initState() {
     super.initState();
     _fetchData();
   }
 
-  //// שליחת משיכה למסד הנתונים
+///// שליחת כל צדקה למסד הנתונים
 
   Future<void> _submitDataToDatabase() async {
-    final url = Uri.parse('http://10.0.2.2:3007/pool/sendthepool');
-
+    final url = Uri.parse('http://10.0.2.2:3007/charidy/sendthecharidy');
+    final type = _isMaaserSelected ? 'מעשר' : 'צדקה';
     final amount = _amountController.text;
     final source = _sourceController.text;
-    double? parsedAmount = double.tryParse(amount);
+     double? parsedAmount = double.tryParse(amount);
     if (amount.isEmpty || parsedAmount == null|| source.isEmpty) {
-       showDialog(
+      showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: const Text('שגיאה'),
@@ -86,63 +83,60 @@ class poolWidgetState extends State<PoolWidget> {
       );
       return;
     }
-
     final isMonthly = _isMonthly.toString();
 
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({
-        'pool_value': amount,
+        'charidy_value': amount,
         'resion': source,
         'monstli': isMonthly,
+        'maaser_or_charidy': type,
         'user_id': widget.userData['user']['id']
       }),
     );
 
     if (response.statusCode == 200) {
-       await DialogService.showMessageDialog(
-          context, 'הצלחה', 'המשיכה בוצעה בהצלחה!' , Colors.green);
+      await DialogService.showMessageDialog(
+          context, 'הצלחה', 'התרומה התווספה בהצלחה!' , Colors.green);
       _amountController.clear();
       _sourceController.clear();
       setState(() {
         _isMonthly = false;
       });
-    }
-     else{
+    } else {
       await DialogService.showMessageDialog(
-          context, 'שגיאה', 'אירעה שגיאה בתהליך המשיכה.' ,Colors.red);
+          context, 'שגיאה', 'אירעה שגיאה בתהליך ההוספה של התרומה.' ,Colors.red);
     }
   }
-  
 
-//// הצגת המשיכות הקודמות
+///// הצגת כל התרומות החודשיות
 
   Future<void> _fetchData() async {
     final response = await http.get(Uri.parse(
-        'http://10.0.2.2:3007/pool/getpoolByuser_id/${widget.userData['user']['id']}'));
+        'http://10.0.2.2:3007/charidy/getcharidyByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
-      final data = jsonDecode(response.body)['PoolFdb'];
+      final data = jsonDecode(response.body)['CharidyFdb'];
       setState(() {
         dataList = List<Map<String, dynamic>>.from(
             data.map((entry) => entry as Map<String, dynamic>));
       });
-      print(dataList);
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:
-            Text('  שלום לך ${widget.userData['user']['name']}'),
+        title: Text('  שלום לך ${widget.userData['user']['name']}'),
       ),
-      body: SingleChildScrollView(child: Container(
+      body: SingleChildScrollView(
+          child: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/poolImage.jpeg'),
+            image: AssetImage('assets/images/CharidyImage.jpeg'),
             fit: BoxFit.cover,
           ),
         ),
@@ -152,17 +146,64 @@ class poolWidgetState extends State<PoolWidget> {
           children: [
             _buildTextField(
               controller: _amountController,
-              labelText: ' סכום(מספרים בלבד) ',
+              labelText: 'סכום(מספרים בלבד) ',
               hintText: 'הכנס סכום',
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 10),
             _buildTextField(
               controller: _sourceController,
-              labelText: ' סיבת ההוצאה ',
-              hintText: 'סיבת ההוצאה ',
+              labelText: ' יעד התרומה ',
+              hintText: ' הכנס את יעד התרומה  ',
             ),
             const SizedBox(height: 10),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Row(
+                children: [
+                  Radio(
+                    value: false,
+                    groupValue: _isMaaserSelected,
+                    onChanged: (value) {
+                      setState(() {
+                        _isMaaserSelected = value ?? false;
+                      });
+                    },
+                    activeColor: Colors.blue,
+                  ),
+                  const Text(
+                    'צדקה ',
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 15,
+                    ),
+                  ),
+                  Radio(
+                    value: true,
+                    groupValue: _isMaaserSelected,
+                    onChanged: (value) {
+                      setState(() {
+                        _isMaaserSelected = value ?? false;
+                      });
+                    },
+                    activeColor: Colors.blue,
+                  ),
+                  const Text(
+                    'מעשר',
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 15,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 5,
+            ),
             Container(
                 decoration: BoxDecoration(color: Colors.white.withOpacity(0.9)),
                 child: Row(
@@ -177,7 +218,7 @@ class poolWidgetState extends State<PoolWidget> {
                       activeColor: const Color.fromARGB(255, 40, 45, 203),
                     ),
                     const Text(
-                      ' הוצאה חודשית קבועה ?',
+                      ' תרומה חודשית קבועה ?',
                       style: TextStyle(
                         color: Colors.black87,
                         fontSize: 15,
@@ -194,18 +235,23 @@ class poolWidgetState extends State<PoolWidget> {
                   padding: const EdgeInsets.all(10),
                   elevation: 8,
                   shadowColor: Colors.black,
-                  backgroundColor: Colors.red,
+                  backgroundColor: const Color.fromARGB(255, 27, 222, 73),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
                 child: const Text(
-                  'משוך',
+                  'תרום',
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 )),
-            const Center(child: Text( style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold) ," הוצאות קודמות :")),
+            const Center(
+  child: Text(
+    "תרומות קודמות :",
+    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+  ),
+),
             SizedBox(
-              height: 450,
+              height: 400,
               child: ListView.builder(
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
@@ -213,21 +259,19 @@ class poolWidgetState extends State<PoolWidget> {
                 itemBuilder: (BuildContext context, int index) {
                   String formattedDate = DateFormat('dd/MM/yyyy')
                       .format(DateTime.parse(dataList[index]['createdAt']));
-                  String formattedTime = DateFormat('HH:mm')
-                      .format(DateTime.parse(dataList[index]['createdAt']));
                   return Card(
-                    elevation: 10,
+                    elevation: 4,
                     margin:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                        const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: ListTile(
                       contentPadding: const EdgeInsets.all(16),
                       tileColor: Colors.white.withOpacity(0.1),
-                      textColor: Colors.redAccent,
+                      textColor: Colors.lightGreen,
                       title: Text(
-                        'סכום ההוצאה: ${dataList[index]['pool_value']} ש"ח',
+                        'סכום התרומה: ${dataList[index]['charidy_value']} ש"ח',
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 18),
                       ),
@@ -235,20 +279,13 @@ class poolWidgetState extends State<PoolWidget> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'סיבה: ${dataList[index]['resion']}',
+                            'מקור: ${dataList[index]['resion']}',
                             style: const TextStyle(
                                 fontStyle: FontStyle.italic, fontSize: 15),
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'תאריך ביצוע העסקה : ${formattedDate}',
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontStyle: FontStyle.italic,
-                            ),
-                          ),
-                          Text(
-                            'שעת ביצוע העסקה : ${formattedTime}',
+                            'תאריך התחלת התרומה  : ${formattedDate}',
                             style: const TextStyle(
                               fontSize: 15,
                               fontStyle: FontStyle.italic,
@@ -261,11 +298,10 @@ class poolWidgetState extends State<PoolWidget> {
                 },
               ),
             ),
-          All.buildTotalIncome(dataList , 'סך ההוצאות הכולל' , 'pool_value')
-
+            All.buildTotalIncome(dataList, 'סך הצדקה הכולל', 'charidy_value'),
           ],
         ),
-      ),
-    ));
+      )),
+    );
   }
 }

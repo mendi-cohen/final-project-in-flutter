@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import './WelcomeTitle .dart';
-import '../MainPage/MainControll.dart';
+import '../MainPage/MyMainPage.dart';
 
 class RegistrationForm extends StatefulWidget {
   @override

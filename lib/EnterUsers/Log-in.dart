@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../MainPage/MainControll.dart';
+import '../MainPage/MyMainPage.dart';
 import 'dart:io';
-// import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 
 
 
@@ -53,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
         'ההתחברות נכשלה!',
         style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold ,color: Colors.white),
   
-      ),// מגדיל את גודל התיבה
+      ),
       duration: Duration(seconds: 2),
     ),
   );

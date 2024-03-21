@@ -65,7 +65,7 @@ class OptionCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Card(
-        margin: const EdgeInsets.all(16),
+        margin: const EdgeInsets.all(10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -74,7 +74,7 @@ class OptionCard extends StatelessWidget {
               size: 25,
               color: Colors.blue,
             ),
-           const SizedBox(height: 15 , width: 200,),
+           const SizedBox(height: 15 , width: 180,),
             Text(
               title,
               style: const TextStyle(fontSize: 16 ),

@@ -108,14 +108,14 @@ class _EnterState extends State<EnterPage> {
                     shadowColor: Colors.grey,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
-                    ), // צבע רקע של הכפתור
+                    ), 
                   ),
                   child: const Text(
                     'כניסה',
                     style: TextStyle(
                         fontSize: 25,
                         color: Colors.white,
-                        fontWeight: FontWeight.bold), // צבע וגודל טקסט
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
               ),

@@ -1,33 +1,66 @@
 import 'package:flutter/material.dart';
-class TitleForActions extends StatefulWidget {
-  final String pageTitle;
 
-  const TitleForActions({Key? key, required this.pageTitle}) : super(key: key);
+class PatternLockWidget extends StatefulWidget {
+  
+
+  const PatternLockWidget({super.key});
 
   @override
-  _TitleForActionsState createState() => _TitleForActionsState();
+  _PatternLockWidgetState createState() => _PatternLockWidgetState();
 }
 
-class _TitleForActionsState extends State<TitleForActions> {
+class _PatternLockWidgetState extends State<PatternLockWidget> {
+  List<Offset> _patternPoints = [];
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        height: 80,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: Colors.blue, // רקע כחול
-          borderRadius: BorderRadius.circular(10), // קטן את פינות הקונטיינר
-        ),
-        child: Text(
-          widget.pageTitle,
-          style: TextStyle(
-            color: Colors.white, // צבע טקסט לבן
-            fontSize: 10, // גודל טקסט
-            fontWeight: FontWeight.bold, // טקסט מודגש
-          ),
+    return GestureDetector(
+      onPanUpdate: (details) {
+        setState(() {
+          RenderBox renderBox = context.findRenderObject() as RenderBox;
+          _patternPoints.add(renderBox.globalToLocal(details.globalPosition));
+        });
+      },
+      onPanEnd: (details) {
+ 
+        setState(() {
+          _patternPoints.clear();
+        });
+      },
+      child: Container(
+        color: Colors.transparent,
+        child: CustomPaint(
+          painter: PatternPainter(patternPoints: _patternPoints),
+          size: Size.infinite,
         ),
       ),
     );
+  }
+}
+
+class PatternPainter extends CustomPainter {
+  final List<Offset> patternPoints;
+
+  PatternPainter({required this.patternPoints});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (patternPoints.isNotEmpty) {
+      Paint paint = Paint()
+        ..color = Colors.black
+        ..strokeCap = StrokeCap.round
+        ..strokeWidth = 5.0;
+
+      for (int i = 0; i < patternPoints.length - 1; i++) {
+        if (patternPoints[i] != null && patternPoints[i + 1] != null) {
+          canvas.drawLine(patternPoints[i], patternPoints[i + 1], paint);
+        }
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
   }
 }

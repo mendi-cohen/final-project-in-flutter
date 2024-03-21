@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:convert';
+import '../Services/All.dart';
+import'../Services/Dialog.dart';
+
 
 class IncomeEntryWidget extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -61,12 +64,14 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
 
     final amount = _amountController.text;
     final source = _sourceController.text;
-    if (amount.isEmpty || source.isEmpty) {
+    double? parsedAmount = double.tryParse(amount);
+    if (amount.isEmpty || parsedAmount == null|| source.isEmpty) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: const Text('שגיאה'),
-          content: const Text('אנא מלא את כל השדות'),
+          backgroundColor: Colors.red,
+          content: const Text(' אנא מלא את כל השדות עם ערכים תקינים '),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -91,11 +96,17 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
     );
 
     if (response.statusCode == 200) {
+      await DialogService.showMessageDialog(
+          context, 'הצלחה', 'ההכנסה התווספה בהצלחה!' , Colors.green);
       _amountController.clear();
       _sourceController.clear();
       setState(() {
         _isMonthly = false;
       });
+    }
+    else{
+      await DialogService.showMessageDialog(
+          context, 'שגיאה', 'אירעה שגיאה בתהליך ההוספה של ההכנסה.' ,Colors.red);
     }
   }
 
@@ -112,29 +123,6 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
             data.map((entry) => entry as Map<String, dynamic>));
       });
     }
-  }
-
-  // חישוב סך כל הכסף שנכנס
-
-  Widget _buildTotalIncome() {
-    double totalIncome = 0;
-    for (var data in dataList) {
-      totalIncome += double.parse(data['income_value']);
-    }
-    return Container(
-      color: Color.fromARGB(255, 195, 215, 232),
-      width: 300,
-      height: 50,
-      alignment: Alignment.center,
-      child: Text(
-        'סך ההכנסות הכולל: ${totalIncome.toStringAsFixed(2)}',
-        style: const TextStyle(
-          color: Colors.blue,
-          fontWeight: FontWeight.bold,
-          fontSize: 20,
-        ),
-      ),
-    );
   }
 
   @override
@@ -156,7 +144,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
           children: [
             _buildTextField(
               controller: _amountController,
-              labelText: 'סכום',
+              labelText: 'סכום(מספרים בלבד) ',
               hintText: 'הכנס סכום',
               keyboardType: TextInputType.number,
             ),
@@ -229,7 +217,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                     ),
                     child: ListTile(
                       contentPadding: const EdgeInsets.all(16),
-                      tileColor: Colors.white,
+                      tileColor: Colors.white.withOpacity(0.1),
                       textColor: Colors.lightGreen,
                       title: Text(
                         'סכום ההכנסה: ${dataList[index]['income_value']} ש"ח',
@@ -261,6 +249,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                               fontStyle: FontStyle.italic,
                             ),
                           ),
+                          
                         ],
                       ),
                     ),
@@ -268,7 +257,8 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                 },
               ),
             ),
-            _buildTotalIncome()
+            All.buildTotalIncome(dataList , 'סך ההכנסות הכולל' , 'income_value'),
+            
           ],
         ),
       )),
