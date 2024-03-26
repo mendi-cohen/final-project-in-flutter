@@ -1,9 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import '../Services/All.dart';
 import'../Services/Dialog.dart';
+import '../Services/deleted.dart';
 
 
 class IncomeEntryWidget extends StatefulWidget {
@@ -69,13 +72,13 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('שגיאה'),
+          title: const Center(child: Text('שגיאה!')),
           backgroundColor: Colors.red,
-          content: const Text(' אנא מלא את כל השדות עם ערכים תקינים '),
+          content: const Text(style: TextStyle(fontSize: 18),' אנא מלא את כל השדות עם ערכים תקינים '),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('אישור'),
+              child: const Text(style: TextStyle(fontSize: 15) ,'אישור'),
             ),
           ],
         ),
@@ -166,7 +169,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                           _isMonthly = value ?? false;
                         });
                       },
-                      activeColor: Color.fromARGB(255, 40, 45, 203),
+                      activeColor: const Color.fromARGB(255, 40, 45, 203),
                     ),
                     const Text(
                       ' הכנסה חודשית קבועה ?',
@@ -218,7 +221,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                     child: ListTile(
                       contentPadding: const EdgeInsets.all(16),
                       tileColor: Colors.white.withOpacity(0.1),
-                      textColor: Colors.lightGreen,
+                      textColor: const Color.fromARGB(255, 75, 27, 222),
                       title: Text(
                         'סכום ההכנסה: ${dataList[index]['income_value']} ש"ח',
                         style: const TextStyle(
@@ -236,14 +239,14 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'תאריך ההכנסה : ${formattedDate}',
+                            'תאריך ההכנסה : $formattedDate',
                             style: const TextStyle(
                               fontSize: 15,
                               fontStyle: FontStyle.italic,
                             ),
                           ),
                           Text(
-                            'שעת ההכנסה : ${formattedTime}',
+                            'שעת ההכנסה : $formattedTime',
                             style: const TextStyle(
                               fontSize: 15,
                               fontStyle: FontStyle.italic,
@@ -252,7 +255,8 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                           
                         ],
                       ),
-                    ),
+                       trailing: DelWidget(ObjectId: dataList[index]['id'].toString(), path:'income')),
+                    
                   );
                 },
               ),

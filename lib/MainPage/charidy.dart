@@ -1,10 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import '../Services/All.dart';
-import'../Services/Dialog.dart';
-
+import '../Services/Dialog.dart';
+import '../Services/deleted.dart';
 
 class CharidyWidget extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -65,18 +67,20 @@ class _CharidyWidgetState extends State<CharidyWidget> {
     final type = _isMaaserSelected ? 'מעשר' : 'צדקה';
     final amount = _amountController.text;
     final source = _sourceController.text;
-     double? parsedAmount = double.tryParse(amount);
-    if (amount.isEmpty || parsedAmount == null|| source.isEmpty) {
+    double? parsedAmount = double.tryParse(amount);
+    if (amount.isEmpty || parsedAmount == null || source.isEmpty) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('שגיאה'),
+          title: const Center(child: Text('שגיאה!')),
           backgroundColor: Colors.red,
-          content: const Text(' אנא מלא את כל השדות עם ערכים תקינים '),
+          content: const Text(
+              style: TextStyle(fontSize: 18),
+              ' אנא מלא את כל השדות עם ערכים תקינים '),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('אישור'),
+              child: const Text(style: TextStyle(fontSize: 15), 'אישור'),
             ),
           ],
         ),
@@ -99,7 +103,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
 
     if (response.statusCode == 200) {
       await DialogService.showMessageDialog(
-          context, 'הצלחה', 'התרומה התווספה בהצלחה!' , Colors.green);
+          context, 'הצלחה', 'התרומה התווספה בהצלחה!', Colors.green);
       _amountController.clear();
       _sourceController.clear();
       setState(() {
@@ -107,7 +111,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
       });
     } else {
       await DialogService.showMessageDialog(
-          context, 'שגיאה', 'אירעה שגיאה בתהליך ההוספה של התרומה.' ,Colors.red);
+          context, 'שגיאה', 'אירעה שגיאה בתהליך ההוספה של התרומה.', Colors.red);
     }
   }
 
@@ -245,11 +249,11 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 )),
             const Center(
-  child: Text(
-    "תרומות קודמות :",
-    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-  ),
-),
+              child: Text(
+                "תרומות קודמות :",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ),
             SizedBox(
               height: 400,
               child: ListView.builder(
@@ -279,13 +283,13 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'מקור: ${dataList[index]['resion']}',
+                            ' יעד : ${dataList[index]['resion']}',
                             style: const TextStyle(
                                 fontStyle: FontStyle.italic, fontSize: 15),
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'תאריך התחלת התרומה  : ${formattedDate}',
+                            'תאריך התחלת התרומה  : $formattedDate',
                             style: const TextStyle(
                               fontSize: 15,
                               fontStyle: FontStyle.italic,
@@ -293,7 +297,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                           ),
                         ],
                       ),
-                    ),
+                    trailing: DelWidget(ObjectId: dataList[index]['id'].toString(), path:'charidy')),
                   );
                 },
               ),

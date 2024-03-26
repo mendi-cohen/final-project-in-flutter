@@ -1,9 +1,13 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import '../Services/All.dart';
 import'../Services/Dialog.dart';
+import '../Services/deleted.dart';
+
 
 
 class PoolWidget extends StatefulWidget {
@@ -73,13 +77,13 @@ class poolWidgetState extends State<PoolWidget> {
        showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('שגיאה'),
+          title: const Center(child: Text('שגיאה!')),
           backgroundColor: Colors.red,
-          content: const Text(' אנא מלא את כל השדות עם ערכים תקינים '),
+         content: const Text(style: TextStyle(fontSize: 18),' אנא מלא את כל השדות עם ערכים תקינים '),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('אישור'),
+              child: const Text(style: TextStyle(fontSize: 15) ,'אישור'),
             ),
           ],
         ),
@@ -128,7 +132,7 @@ class poolWidgetState extends State<PoolWidget> {
         dataList = List<Map<String, dynamic>>.from(
             data.map((entry) => entry as Map<String, dynamic>));
       });
-      print(dataList);
+      
     }
   }
   
@@ -241,14 +245,14 @@ class poolWidgetState extends State<PoolWidget> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'תאריך ביצוע העסקה : ${formattedDate}',
+                            'תאריך ביצוע העסקה : $formattedDate',
                             style: const TextStyle(
                               fontSize: 15,
                               fontStyle: FontStyle.italic,
                             ),
                           ),
                           Text(
-                            'שעת ביצוע העסקה : ${formattedTime}',
+                            'שעת ביצוע העסקה : $formattedTime',
                             style: const TextStyle(
                               fontSize: 15,
                               fontStyle: FontStyle.italic,
@@ -256,7 +260,7 @@ class poolWidgetState extends State<PoolWidget> {
                           ),
                         ],
                       ),
-                    ),
+                     trailing: DelWidget(ObjectId: dataList[index]['id'].toString(),path:'pool')),
                   );
                 },
               ),

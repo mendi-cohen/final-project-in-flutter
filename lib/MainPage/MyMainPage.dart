@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import "../MainCards.dart";
 import "newPool.dart";
 import "newIncome.dart";
@@ -109,7 +108,7 @@ Widget build(BuildContext context) {
               ],
             ),
                    OptionCard(
-                  title: " צדקה ",
+                  title: " צדקה / מעשרות ",
                   icon: Icons.add_circle,
                   onTap: () {
                     Navigator.push(

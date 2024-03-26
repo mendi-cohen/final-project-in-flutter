@@ -12,7 +12,7 @@ class All {
       height: 50,
       alignment: Alignment.center,
       child: Text(
-        '${totalText}: ${totalIncome.toStringAsFixed(2)}',
+        '$totalText: ${totalIncome.toStringAsFixed(2)}',
         style: const TextStyle(
           color: Colors.blue,
           fontWeight: FontWeight.bold,
