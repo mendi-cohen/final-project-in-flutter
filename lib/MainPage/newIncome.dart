@@ -134,7 +134,8 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
       appBar: AppBar(
         title: Text('  שלום לך ${widget.userData['user']['name']}'),
       ),
-      body: SingleChildScrollView(child: Container(
+      body: SingleChildScrollView(child:
+       Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/incomeImage.jpeg'),
@@ -261,7 +262,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                 },
               ),
             ),
-            All.buildTotalIncome(dataList , 'סך ההכנסות הכולל' , 'income_value'),
+            All.buildTotalIncome(dataList , 'סך ההכנסות הכולל' , 'income_value' , Colors.blue),
             
           ],
         ),

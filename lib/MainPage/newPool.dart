@@ -265,7 +265,7 @@ class poolWidgetState extends State<PoolWidget> {
                 },
               ),
             ),
-          All.buildTotalIncome(dataList , 'סך ההוצאות הכולל' , 'pool_value')
+          All.buildTotalIncome(dataList , 'סך ההוצאות הכולל' , 'pool_value' , Colors.red)
 
           ],
         ),

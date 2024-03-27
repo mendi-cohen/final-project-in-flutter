@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, unnecessary_cast
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -7,7 +7,8 @@ import 'dart:convert';
 import '../Services/All.dart';
 import '../Services/Dialog.dart';
 import '../Services/deleted.dart';
-import '../MonthPickerWidget.dart';
+import '../Services/MonthPickerWidget.dart';
+import '../CharidyTable.dart';
 
 class CharidyWidget extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -62,67 +63,115 @@ class _CharidyWidgetState extends State<CharidyWidget> {
     _fetchData();
   }
 
-///// שליחת כל צדקה למסד הנתונים
-
-Future<void> _submitDataToDatabase() async {
-  final url = Uri.parse('http://10.0.2.2:3007/charidy/sendthecharidy');
-  final type = _isMaaserSelected ? 'מעשר' : 'צדקה';
-  final amount = _amountController.text;
-  final source = _sourceController.text;
-  double? parsedAmount = double.tryParse(amount);
-  if (amount.isEmpty || parsedAmount == null || source.isEmpty) {
+  void _showMonthPickerDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Center(child: Text('שגיאה!')),
-        backgroundColor: Colors.red,
-        content: const Text(
-            style: TextStyle(fontSize: 18),
-            ' אנא מלא את כל השדות עם ערכים תקינים '),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text(style: TextStyle(fontSize: 15), 'אישור'),
+      builder: (BuildContext context) {
+        String? selectedMonth;
+        return AlertDialog(
+          title: const Text('בחירת חודש'),
+          content: MonthPickerWidget(
+            onMonthSelected: (month) {
+              selectedMonth = month;
+            },
           ),
-        ],
-      ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(selectedMonth);
+              },
+              child: const Text('אישור'),
+            ),
+          ],
+        );
+      },
+    ).then((selectedMonth) {
+      if (selectedMonth != null) {
+        setState(() {
+          _selectedMonth = selectedMonth;
+        });
+      }
+    });
+  }
+
+///// שליחת כל צדקה למסד הנתונים
+
+  Future<void> _submitDataToDatabase() async {
+    final url = Uri.parse('http://10.0.2.2:3007/charidy/sendthecharidy');
+    final type = _isMaaserSelected ? 'מעשר' : 'צדקה';
+    final amount = _amountController.text;
+    final source = _sourceController.text;
+    double? parsedAmount = double.tryParse(amount);
+    if (amount.isEmpty || parsedAmount == null || source.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Center(child: Text('שגיאה!')),
+          backgroundColor: Colors.red,
+          content: const Text(
+              style: TextStyle(fontSize: 18),
+              ' אנא מלא את כל השדות עם ערכים תקינים '),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text(style: TextStyle(fontSize: 15), 'אישור'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+    String? postData;
+
+    if (_selectedOption == 'חד פעמי' || _selectedOption == 'חודשי קבוע') {
+      postData = _selectedOption;
+    } else if (_selectedOption == 'לכמה חודשים') {
+      if (_selectedMonth == null) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Center(child: Text('שגיאה!')),
+            backgroundColor: Colors.red,
+            content: const Text(
+                style: TextStyle(fontSize: 18), ' אנא בחר חודש מהרשימה '),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text(style: TextStyle(fontSize: 15), 'אישור'),
+              ),
+            ],
+          ),
+        );
+        return;
+      }
+      postData = _selectedMonth;
+    }
+
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        'charidy_value': amount,
+        'resion': source,
+        'type': postData,
+        'maaser_or_charidy': type,
+        'user_id': widget.userData['user']['id']
+      }),
     );
-    return;
+
+    if (response.statusCode == 200) {
+      await DialogService.showMessageDialog(
+          context, 'הצלחה', 'התרומה התווספה בהצלחה!', Colors.green);
+      _amountController.clear();
+      _sourceController.clear();
+      setState(() {
+        _selectedOption = 'חד פעמי';
+      });
+    } else {
+      await DialogService.showMessageDialog(
+          context, 'שגיאה', 'אירעה שגיאה בתהליך ההוספה של התרומה.', Colors.red);
+    }
   }
-  String? postData;
-
-  if (_selectedOption == 'חד פעמי' || _selectedOption == 'חודשי קבוע') {
-    postData = _selectedOption;
-  } else if (_selectedOption == 'לכמה חודשים') {
-    postData = _selectedMonth;
-  }
-
-  final response = await http.post(
-    url,
-    headers: {"Content-Type": "application/json"},
-    body: jsonEncode({
-      'charidy_value': amount,
-      'resion': source,
-      'type': postData, // שליחת המידע הנכון לשרת
-      'maaser_or_charidy': type,
-      'user_id': widget.userData['user']['id']
-    }),
-  );
-
-  if (response.statusCode == 200) {
-    await DialogService.showMessageDialog(
-        context, 'הצלחה', 'התרומה התווספה בהצלחה!', Colors.green);
-    _amountController.clear();
-    _sourceController.clear();
-     setState(() {
-    _selectedOption = 'חד פעמי';
-  });
-  } else {
-    await DialogService.showMessageDialog(
-        context, 'שגיאה', 'אירעה שגיאה בתהליך ההוספה של התרומה.', Colors.red);
-  }
-}
-
 
 ///// הצגת כל התרומות החודשיות
 
@@ -163,13 +212,13 @@ Future<void> _submitDataToDatabase() async {
               hintText: 'הכנס סכום',
               keyboardType: TextInputType.number,
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 5),
             _buildTextField(
               controller: _sourceController,
               labelText: ' יעד התרומה ',
               hintText: ' הכנס את יעד התרומה  ',
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 5),
             Container(
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.9),
@@ -215,7 +264,7 @@ Future<void> _submitDataToDatabase() async {
               ),
             ),
             const SizedBox(height: 5),
-            const SizedBox(height: 6),
+         
             Container(
               decoration: BoxDecoration(color: Colors.white.withOpacity(0.9)),
               child: Column(
@@ -233,7 +282,6 @@ Future<void> _submitDataToDatabase() async {
                     onChanged: (value) {
                       setState(() {
                         _selectedOption = value as String?;
-                        print('$_selectedOption');
                       });
                     },
                   ),
@@ -250,39 +298,45 @@ Future<void> _submitDataToDatabase() async {
                     onChanged: (value) {
                       setState(() {
                         _selectedOption = value as String?;
-                        print('$_selectedOption');
                       });
                     },
                   ),
                   RadioListTile(
-                    title: const Text(
-                      'תרומה לכמה חודשים',
-                      style: TextStyle(
-                        color: Colors.black87,
-                        fontSize: 15,
-                      ),
+                    title: Row(
+                      children: [
+                        const Text(
+                          'תרומה לכמה חודשים',
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 15,
+                          ),
+                        ),
+                        if (_selectedOption == 'לכמה חודשים' &&
+                            _selectedMonth != null)
+                          Text(
+                            ' ($_selectedMonth)',
+                            style: const TextStyle(
+                              color: Colors.black87,
+                              fontSize: 15,
+                            ),
+                          ),
+                      ],
                     ),
                     value: 'לכמה חודשים',
                     groupValue: _selectedOption,
                     onChanged: (value) {
                       setState(() {
                         _selectedOption = value as String?;
-                        print('$_selectedOption');
                       });
+                      if (_selectedOption == 'לכמה חודשים') {
+                        _showMonthPickerDialog();
+                      }
                     },
                   ),
-                  if (_selectedOption == 'לכמה חודשים')
-                    MonthPickerWidget(
-                      onMonthSelected: (selectedMonth) {
-                        setState(() {
-                          _selectedMonth = selectedMonth;
-                        });
-                      },
-                    ),
                 ],
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 5),
             ElevatedButton(
                 onPressed: () {
                   _submitDataToDatabase();
@@ -298,7 +352,7 @@ Future<void> _submitDataToDatabase() async {
                 ),
                 child: const Text(
                   'תרום',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
+                  style: TextStyle(color: Colors.white, fontSize: 20),
                 )),
             const Center(
               child: Text(
@@ -309,8 +363,8 @@ Future<void> _submitDataToDatabase() async {
                     color: Colors.white),
               ),
             ),
-            Container(
-                height: 270,
+            SizedBox(
+                height: 200,
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
@@ -319,7 +373,7 @@ Future<void> _submitDataToDatabase() async {
                           .format(DateTime.parse(item['createdAt']));
                       return Container(
                         width: MediaQuery.of(context).size.width,
-                        height: 150,
+                        height: 160,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 6),
                         child: Card(
@@ -345,14 +399,14 @@ Future<void> _submitDataToDatabase() async {
                                   ' יעד : ${item['resion']}',
                                   style: const TextStyle(
                                     fontStyle: FontStyle.italic,
-                                    fontSize: 15,
+                                    fontSize: 17,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
                                   'תאריך התחלת התרומה  : $formattedDate',
                                   style: const TextStyle(
-                                    fontSize: 15,
+                                    fontSize: 17,
                                     fontStyle: FontStyle.italic,
                                   ),
                                 ),
@@ -368,7 +422,38 @@ Future<void> _submitDataToDatabase() async {
                     }).toList(),
                   ),
                 )),
-            All.buildTotalIncome(dataList, 'סך הצדקה הכולל', 'charidy_value'),
+
+            All.buildTotalIncome(dataList, 'סך התרומות הכולל', 'charidy_value' , Colors.green),
+          const  SizedBox(height: 5),
+
+         ElevatedButton.icon(
+  onPressed: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              CharidyTableWidget(userData: widget.userData)),
+    );
+  },
+  style: ButtonStyle(
+    backgroundColor: MaterialStateProperty.all(Colors.amber), 
+    padding:  MaterialStateProperty.all(const EdgeInsets.all(16)), 
+    shape: MaterialStateProperty.all(
+      RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20), 
+      ),
+    ),
+  ),
+  label:const Text(
+    'למעבר לכל התרומות ושיקלולן',
+    style: TextStyle(fontSize: 20), 
+  ),
+  icon:const Icon(Icons.arrow_forward),
+
+),
+
+          const  SizedBox(height: 50),
+
           ],
         ),
       )),

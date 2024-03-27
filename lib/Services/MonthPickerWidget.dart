@@ -14,18 +14,18 @@ class _MonthPickerWidgetState extends State<MonthPickerWidget> {
   String _selectedMonth = '';
   
   final Map<String, String> monthTranslations = {
-    'January': 'ינואר',
-    'February': 'פברואר',
-    'March': 'מרץ',
-    'April': 'אפריל',
-    'May': 'מאי',
-    'June': 'יוני',
-    'July': 'יולי',
-    'August': 'אוגוסט',
-    'September': 'ספטמבר',
-    'October': 'אוקטובר',
-    'November': 'נובמבר',
-    'December': 'דצמבר',
+    'January': ' 01 ינואר',
+    'February': ' 02 פברואר',
+    'March': ' 03 מרץ',
+    'April': ' 04 אפריל',
+    'May': ' 05 מאי',
+    'June': ' 06 יוני',
+    'July': ' 07 יולי',
+    'August': ' 08 אוגוסט',
+    'September': ' 09 ספטמבר',
+    'October': ' 10 אוקטובר',
+    'November': ' 11 נובמבר',
+    'December': ' 12 דצמבר',
   };
 
   @override
@@ -33,7 +33,7 @@ class _MonthPickerWidgetState extends State<MonthPickerWidget> {
     List<String> months = MonthProvider.getMonths();
 
     return DropdownButton<String>(
-      hint: const Text('בחר עד איזה חודש אתה רוצה להשאיר את התרומה  '),
+      hint: const Text(' בחר עד איזה חודש '),
       value: _selectedMonth.isEmpty ? null : _selectedMonth,
       onChanged: (String? newValue) {
         setState(() {

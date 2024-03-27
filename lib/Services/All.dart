@@ -1,24 +1,30 @@
 import 'package:flutter/material.dart';
 
 class All {
-  static Widget buildTotalIncome(List<dynamic> dataList , String totalText , String value ) {
+  static Widget buildTotalIncome(List<dynamic> dataList , String totalText , String value , Color color) {
     double totalIncome = 0;
     for (var data in dataList) {
       totalIncome += double.parse(data['$value']);
     }
     return Container(
-      color: const Color.fromARGB(255, 195, 215, 232),
-      width: 300,
+   decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(20), 
+      ),
+      width: 380,
       height: 50,
       alignment: Alignment.center,
       child: Text(
-        '$totalText: ${totalIncome.toStringAsFixed(2)}',
+        '$totalText: ${totalIncome.toStringAsFixed(2)} ש"ח',
         style: const TextStyle(
-          color: Colors.blue,
+          color: Colors.white,
           fontWeight: FontWeight.bold,
-          fontSize: 20,
+          fontSize: 17,
+          
         ),
+        
       ),
+      
     );
   }
 }
