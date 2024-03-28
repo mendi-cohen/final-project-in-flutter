@@ -31,7 +31,7 @@ void didChangeDependencies() {
 
   Future<void> _fetchPoolData() async {
     final response = await http.get(Uri.parse(
-        'http://10.0.2.2:3007/pool/getpoolByuser_id/${widget.userData['user']['id']}'));
+        'http://localhost:3007/pool/getpoolByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['PoolFdb'];
@@ -47,7 +47,7 @@ void didChangeDependencies() {
 
     Future<void> _fetchIncomeData() async {
     final response = await http.get(Uri.parse(
-        'http://10.0.2.2:3007/income/getincomeByuser_id/${widget.userData['user']['id']}'));
+        'http://localhost:3007/income/getincomeByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['incomsFdb'];

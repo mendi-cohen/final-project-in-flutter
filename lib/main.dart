@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'EnterUsers/EnterPage.dart';
+import './Services/not.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  NotificationService().initNotification();
   runApp(const MyApp());
 }
 

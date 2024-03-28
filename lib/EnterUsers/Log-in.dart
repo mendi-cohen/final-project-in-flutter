@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../MainPage/MyMainPage.dart';
-import 'dart:io';
+
 
 
 
@@ -25,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _fetchStoredPasswords() async {
-    final url = Uri.parse('http://10.0.2.2:3007/enterUser');
+    final url = Uri.parse('http://localhost:3007/enterUser');
     final password = _passwordController.text;
     final email = _emailController.text;
 
@@ -85,8 +85,6 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  final mydivais = Platform.isAndroid;
-                 print(mydivais);
                   _fetchStoredPasswords();
                   setState(() {
                     _passwordController.text = '';
@@ -101,3 +99,5 @@ class _LoginPageState extends State<LoginPage> {
     
   }
 }
+
+/// http://localhost:3007

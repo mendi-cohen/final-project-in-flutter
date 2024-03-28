@@ -62,7 +62,7 @@ class poolWidgetState extends State<PoolWidget> {
   //// שליחת משיכה למסד הנתונים
 
   Future<void> _submitDataToDatabase() async {
-    final url = Uri.parse('http://10.0.2.2:3007/pool/sendthepool');
+    final url = Uri.parse('http://localhost:3007/pool/sendthepool');
 
     final amount = _amountController.text;
     final source = _sourceController.text;
@@ -118,7 +118,7 @@ class poolWidgetState extends State<PoolWidget> {
 
   Future<void> _fetchData() async {
     final response = await http.get(Uri.parse(
-        'http://10.0.2.2:3007/pool/getpoolByuser_id/${widget.userData['user']['id']}'));
+        'http://localhost:3007/pool/getpoolByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['PoolFdb'];

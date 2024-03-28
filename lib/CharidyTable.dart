@@ -20,7 +20,7 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
 
   Future<void> _fetchDataMaaser() async {
     final response = await http.get(Uri.parse(
-        'http://10.0.2.2:3007/charidy/getMaaserByuser_id/${widget.userData['user']['id']}'));
+        'http://localhost:3007/charidy/getMaaserByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['MaaserFdb'];
@@ -33,7 +33,7 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
 
   Future<void> _fetchDataIncome() async {
     final response = await http.get(Uri.parse(
-        'http://10.0.2.2:3007/income/getincomeByuser_id/${widget.userData['user']['id']}'));
+        'http://localhost:3007/income/getincomeByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['incomsFdb'];
@@ -46,7 +46,7 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
 
   Future<void> _fetchDataCharidy() async {
     final response = await http.get(Uri.parse(
-        'http://10.0.2.2:3007/charidy/getOnlyCharidyByuser_id/${widget.userData['user']['id']}'));
+        'http://localhost:3007/charidy/getOnlyCharidyByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['OnlyCharidy'];

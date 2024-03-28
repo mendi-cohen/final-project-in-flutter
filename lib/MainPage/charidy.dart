@@ -97,7 +97,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
 ///// שליחת כל צדקה למסד הנתונים
 
   Future<void> _submitDataToDatabase() async {
-    final url = Uri.parse('http://10.0.2.2:3007/charidy/sendthecharidy');
+    final url = Uri.parse('http://localhost:3007/charidy/sendthecharidy');
     final type = _isMaaserSelected ? 'מעשר' : 'צדקה';
     final amount = _amountController.text;
     final source = _sourceController.text;
@@ -177,7 +177,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
 
   Future<void> _fetchData() async {
     final response = await http.get(Uri.parse(
-        'http://10.0.2.2:3007/charidy/getcharidyByuser_id/${widget.userData['user']['id']}'));
+        'http://localhost:3007/charidy/getcharidyByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['CharidyFdb'];

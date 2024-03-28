@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 Future<void> deleteCharidy(String ObjectId, String path, BuildContext context) async {
   try {
-    String url = 'http://10.0.2.2:3007/$path/remove/$ObjectId';
+    String url = 'http://localhost:3007/$path/remove/$ObjectId';
     final response = await http.delete(Uri.parse(url));
 
     if (response.statusCode == 200) {

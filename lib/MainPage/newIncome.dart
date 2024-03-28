@@ -64,7 +64,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
 ///// שליחת כל הכנסה למסד הנתונים
 
   Future<void> _submitDataToDatabase() async {
-    final url = Uri.parse('http://10.0.2.2:3007/income/sendincome');
+    final url = Uri.parse('http://localhost:3007/income/sendincome');
 
     final amount = _amountController.text;
     final source = _sourceController.text;
@@ -118,7 +118,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
 
   Future<void> _fetchData() async {
     final response = await http.get(Uri.parse(
-        'http://10.0.2.2:3007/income/getincomeByuser_id/${widget.userData['user']['id']}'));
+        'http://localhost:3007/income/getincomeByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['incomsFdb'];
