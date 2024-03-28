@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import './Services/All.dart';
+import 'Services/titleForCharidyTable.dart';
 
 class CharidyTableWidget extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -118,10 +119,17 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
+                const SizedBox(
+                height: 20,
+              ),
+              const TitleForCharidyTable(
+                title: 'סיכום המעשר החודשי',
+              ),
               SizedBox(
-                  height: 300,
+                  height: 200,
                   child: dataListMaaser.isEmpty
-                      ? const Center(child: CircularProgressIndicator())
+                      ? const Center(
+                          child: TitleForCharidyTable( title: " אין נתונים זמינים ",color: Colors.black))
                       : GridView.builder(
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
@@ -144,11 +152,18 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
                                   children: <Widget>[
                                     CircleAvatar(
                                       radius: 30,
-                                      child: Text(item['charidy_value']),
+                                      child:
+                                          Text('${item['charidy_value']} ש"ח'),
                                     ),
                                     const SizedBox(height: 10),
                                     Text(
-                                      item['resion'],
+                                      ' עבור: ${item['resion']} ',
+                                      style: const TextStyle(fontSize: 16),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      ' סיום התרומה: ${item['type']} ',
                                       style: const TextStyle(fontSize: 16),
                                       textAlign: TextAlign.center,
                                     ),
@@ -160,15 +175,30 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
                         )),
               Center(
                   child: All.buildTotalIncome(
-                      dataListIncomeOnly, 'סך המעשרות הכולל', 'income_value' ,const Color.fromARGB(255, 234, 215, 36))),
-                      SizedBox(height: 5,),
+                      dataListIncomeOnly,
+                      'סך המעשרות הכולל',
+                      'income_value',
+                      const Color.fromARGB(255, 234, 215, 36))),
+              const SizedBox(
+                height: 5,
+              ),
               Center(
-                  child: All.buildTotalIncome(dataListIncomeModified,
-                      'סך המעשרות שנותר להפריש', 'income_value' , const Color.fromARGB(255, 234, 215, 36))),
+                  child: All.buildTotalIncome(
+                      dataListIncomeModified,
+                      'סך המעשרות שנותר להפריש',
+                      'income_value',
+                      const Color.fromARGB(255, 234, 215, 36))),
+              const SizedBox(
+                height: 80,
+              ),
+              const TitleForCharidyTable(
+                title: 'סיכום הצדקה החודשית',
+              ),
               SizedBox(
                   height: 200,
                   child: dataListCharidy.isEmpty
-                      ? const Center(child: CircularProgressIndicator())
+                      ? const Center(
+                          child: TitleForCharidyTable( title: " אין נתונים זמינים ",color: Colors.black) )
                       : GridView.builder(
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
@@ -189,11 +219,18 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
                                   children: <Widget>[
                                     CircleAvatar(
                                       radius: 30,
-                                      child: Text(item['charidy_value']),
+                                      child:
+                                          Text('${item['charidy_value']} ש"ח'),
                                     ),
                                     const SizedBox(height: 10),
                                     Text(
-                                      item['resion'],
+                                      ' עבור: ${item['resion']} ',
+                                      style: const TextStyle(fontSize: 16),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      ' סיום התרומה: ${item['type']} ',
                                       style: const TextStyle(fontSize: 16),
                                       textAlign: TextAlign.center,
                                     ),
@@ -205,7 +242,10 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
                         )),
               Center(
                   child: All.buildTotalIncome(
-                      dataListCharidy, 'סך הצדקה הכולל', 'charidy_value' , const Color.fromARGB(255, 234, 215, 36))),
+                      dataListCharidy,
+                      'סך הצדקה הכולל',
+                      'charidy_value',
+                      const Color.fromARGB(255, 234, 215, 36))),
             ],
           )),
     );

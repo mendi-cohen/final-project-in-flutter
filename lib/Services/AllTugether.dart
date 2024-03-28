@@ -15,17 +15,17 @@ class AllTuether {
      double tenPercent = totalIncome * 0.1;
     return Container(
       decoration: BoxDecoration(
-           color: Colors.white.withOpacity(0.9),
+           color: Colors.white.withOpacity(0.0),
       ),
       width: 350,
       height: 100,
       alignment: Alignment.center,
       child: Center(
         child: Text(
-          'מצב החשבון כרגע הוא: ${accountStatus.toStringAsFixed(2)}ש"ח ( סה"כ מעשרות ${tenPercent.toStringAsFixed(2)} ש"ח  )',
+          'מצב חשבונך הוא: ${accountStatus.toStringAsFixed(1)}ש"ח     ( סה"כ מעשרות : ${tenPercent.toStringAsFixed(1)} ש"ח  )',
           textAlign: TextAlign.center,
           style: const TextStyle(
-            color: Colors.blue,
+            color:  Colors.black,
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),

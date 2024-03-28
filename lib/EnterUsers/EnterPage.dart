@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Log-in.dart';
 import './Sign-in.dart';
-import 'Logo.dart';
+
 
 class EnterPage extends StatefulWidget {
   const EnterPage({super.key});
@@ -47,7 +47,7 @@ class _EnterState extends State<EnterPage> {
                 style: ElevatedButton.styleFrom(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                  backgroundColor: Colors.blue,
+                  backgroundColor: const Color.fromARGB(255, 82, 188, 230),
                   elevation: 10,
                   shadowColor: Colors.grey,
                   shape: RoundedRectangleBorder(
@@ -63,7 +63,7 @@ class _EnterState extends State<EnterPage> {
                 ),
               ),
             ),
-            MediaQueryTitle(),
+           
             Expanded(
               child: Align(
                 alignment: Alignment.bottomCenter,
@@ -72,7 +72,7 @@ class _EnterState extends State<EnterPage> {
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        backgroundColor: Color.fromARGB(255, 82, 188, 230),
+                        backgroundColor:const Color.fromARGB(255, 82, 188, 230),
                         title: const Center(
                             child: Text(
                           'כניסה',
@@ -103,7 +103,7 @@ class _EnterState extends State<EnterPage> {
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 130, vertical: 24),
-                    backgroundColor: Colors.blue,
+                    backgroundColor: const Color.fromARGB(255, 82, 188, 230),
                     elevation: 5,
                     shadowColor: Colors.grey,
                     shape: RoundedRectangleBorder(

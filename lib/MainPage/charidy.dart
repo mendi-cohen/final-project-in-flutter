@@ -63,36 +63,36 @@ class _CharidyWidgetState extends State<CharidyWidget> {
     _fetchData();
   }
 
-  void _showMonthPickerDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        String? selectedMonth;
-        return AlertDialog(
-          title: const Text('בחירת חודש'),
-          content: MonthPickerWidget(
-            onMonthSelected: (month) {
-              selectedMonth = month;
+ void _showMonthPickerDialog() {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+    String? selectedMonth = DateFormat('MMMM MM').format(DateTime.now());
+      return AlertDialog(
+        title: const Text('בחירת חודש'),
+        content: MonthPickerWidget(
+          onMonthSelected: (month) {
+            selectedMonth = month;
+          },
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(selectedMonth);
             },
+            child: const Text('אישור'),
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(selectedMonth);
-              },
-              child: const Text('אישור'),
-            ),
-          ],
-        );
-      },
-    ).then((selectedMonth) {
-      if (selectedMonth != null) {
-        setState(() {
-          _selectedMonth = selectedMonth;
-        });
-      }
-    });
-  }
+        ],
+      );
+    },
+  ).then((selectedMonth) {
+    if (selectedMonth != null) {
+      setState(() {
+        _selectedMonth = selectedMonth;
+      });
+    }
+  });
+}
 
 ///// שליחת כל צדקה למסד הנתונים
 
@@ -234,7 +234,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                         _isMaaserSelected = value ?? false;
                       });
                     },
-                    activeColor: Colors.blue,
+                    activeColor: const Color.fromARGB(255, 7, 123, 63),
                   ),
                   const Text(
                     'צדקה ',
@@ -251,7 +251,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                         _isMaaserSelected = value ?? false;
                       });
                     },
-                    activeColor: Colors.blue,
+                    activeColor: const Color.fromARGB(255, 7, 123, 63),
                   ),
                   const Text(
                     'מעשר',
@@ -264,12 +264,12 @@ class _CharidyWidgetState extends State<CharidyWidget> {
               ),
             ),
             const SizedBox(height: 5),
-         
             Container(
               decoration: BoxDecoration(color: Colors.white.withOpacity(0.9)),
               child: Column(
                 children: [
                   RadioListTile(
+                    activeColor: const Color.fromARGB(255, 6, 232, 13),
                     title: const Text(
                       'תרומה חד פעמית',
                       style: TextStyle(
@@ -286,6 +286,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                     },
                   ),
                   RadioListTile(
+                    activeColor: const Color.fromARGB(255, 6, 232, 13),
                     title: const Text(
                       'תרומה חודשית קבועה',
                       style: TextStyle(
@@ -302,6 +303,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                     },
                   ),
                   RadioListTile(
+                    activeColor: const Color.fromARGB(255, 6, 232, 13),
                     title: Row(
                       children: [
                         const Text(
@@ -354,13 +356,19 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                   'תרום',
                   style: TextStyle(color: Colors.white, fontSize: 20),
                 )),
-            const Center(
-              child: Text(
-                "תרומות קודמות :",
-                style: TextStyle(
-                    fontSize: 20,
+               const SizedBox(height: 2,),
+            Container(
+              color: Colors.white.withOpacity(
+                  0.6), // כאן אתה יכול לשנות את השקיפות והצבע כרצונך
+              child: const Center(
+                child: Text(
+                  "תרומות קודמות :",
+                  style: TextStyle(
+                    fontSize: 25,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white),
+                    color: Color.fromARGB(255, 18, 11, 11),
+                  ),
+                ),
               ),
             ),
             SizedBox(
@@ -422,38 +430,37 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                     }).toList(),
                   ),
                 )),
-
-            All.buildTotalIncome(dataList, 'סך התרומות הכולל', 'charidy_value' , Colors.green),
-          const  SizedBox(height: 5),
-
-         ElevatedButton.icon(
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) =>
-              CharidyTableWidget(userData: widget.userData)),
-    );
-  },
-  style: ButtonStyle(
-    backgroundColor: MaterialStateProperty.all(Colors.amber), 
-    padding:  MaterialStateProperty.all(const EdgeInsets.all(16)), 
-    shape: MaterialStateProperty.all(
-      RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20), 
-      ),
-    ),
-  ),
-  label:const Text(
-    'למעבר לכל התרומות ושיקלולן',
-    style: TextStyle(fontSize: 20), 
-  ),
-  icon:const Icon(Icons.arrow_forward),
-
-),
-
-          const  SizedBox(height: 50),
-
+            const SizedBox(
+              height: 20,
+            ),
+            All.buildTotalIncome(
+                dataList, 'סך התרומות הכולל', 'charidy_value', const Color.fromARGB(255, 27, 222, 73)),
+            const SizedBox(height: 5),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          CharidyTableWidget(userData: widget.userData)),
+                );
+              },
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(const Color.fromARGB(255, 27, 222, 73)),
+                padding: MaterialStateProperty.all(const EdgeInsets.all(16)),
+                shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
+              label: const Text(
+                'למעבר לכל התרומות ושיקלולן',
+                style: TextStyle(fontSize: 20 ,color: Colors.white),
+              ),
+              icon: const Icon(Icons.arrow_forward ,color: Colors.white,),
+            ),
+            const SizedBox(height: 50),
           ],
         ),
       )),

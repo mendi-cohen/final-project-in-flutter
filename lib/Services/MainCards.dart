@@ -1,23 +1,15 @@
-
 import 'package:flutter/material.dart';
 
-
-
-
-//////  כרטיסי הכניסה הראשית 
-
-
+////// כרטיסי הכניסה הראשית
 class EnterCard extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
- 
 
   const EnterCard({
-    super.key,
+    Key? key,
     required this.title,
     required this.onTap,
-   
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,40 +17,32 @@ class EnterCard extends StatelessWidget {
       onTap: onTap,
       child: Card(
         margin: const EdgeInsets.all(10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-           const SizedBox(height: 30 , width: 20,),
-            Text(
-              title,
-              style: const TextStyle(fontSize: 20),
-              textAlign: TextAlign.center,
-              
-            ),
-          ],
+        elevation: 4, // צל
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Text(
+            title,
+            style: const TextStyle(fontSize: 20),
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
     );
   }
 }
 
-
-///// כרטיסי העמוד הראשי
-
-
+////// כרטיסי העמוד הראשי
 class OptionCard extends StatelessWidget {
   final String title;
   final IconData icon;
   final VoidCallback onTap;
- 
 
   const OptionCard({
-    super.key,
+    Key? key,
     required this.title,
     required this.icon,
     required this.onTap,
-   
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -66,27 +50,27 @@ class OptionCard extends StatelessWidget {
       onTap: onTap,
       child: Card(
         margin: const EdgeInsets.all(10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 25,
-              color: Colors.blue,
-            ),
-           const SizedBox(height: 15 , width: 180,),
-            Text(
-              title,
-              style: const TextStyle(fontSize: 16 ),
-              textAlign: TextAlign.center,
-            ),
-          ],
+        elevation: 4, // צל
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 40,
+                color: const Color.fromARGB(255, 194, 221, 44),
+              ),
+              const SizedBox(height: 15 , width: 155,),
+              Text(
+                title,
+                style: const TextStyle(fontSize: 16),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
-
-
-
-

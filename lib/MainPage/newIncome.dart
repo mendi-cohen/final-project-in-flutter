@@ -9,6 +9,7 @@ import'../Services/Dialog.dart';
 import '../Services/deleted.dart';
 
 
+
 class IncomeEntryWidget extends StatefulWidget {
   final Map<String, dynamic> userData;
   const IncomeEntryWidget({super.key, required this.userData});
@@ -190,7 +191,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                   padding: const EdgeInsets.all(10),
                   elevation: 8,
                   shadowColor: Colors.black,
-                  backgroundColor: const Color.fromARGB(255, 75, 27, 222),
+                  backgroundColor: Colors.blue,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -199,7 +200,20 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                   'הכנס',
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 )),
-            const Center(child: Text( style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold) ," הכנסות קודמות :")),
+            Container(
+                  color: Colors.white.withOpacity(
+                      0.6),
+                  child: const Center(
+                    child: Text(
+                      "הכנסות קודמות :",
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 18, 11, 11),
+                      ),
+                    ),
+                  ),
+                ),
             SizedBox(
               height: 450,
               child: ListView.builder(
@@ -262,6 +276,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                 },
               ),
             ),
+            // EmailIncomeWidget(dataList: dataList),
             All.buildTotalIncome(dataList , 'סך ההכנסות הכולל' , 'income_value' , Colors.blue),
             
           ],

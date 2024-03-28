@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import './WelcomeTitle .dart';
-import '../MainPage/MyMainPage.dart';
+
 
 class RegistrationForm extends StatefulWidget {
   @override
@@ -117,8 +117,8 @@ class _RegistrationFormState extends State<RegistrationForm> {
           child: Text(' טופס הרשמה '),
         ),
       ),
-      body:  Container(
-          // height: 600,
+      body: SingleChildScrollView( child:  Container(
+        
           child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -176,7 +176,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
             ),
           )
         ],
-      )),
+      ))),
     );
   }
 }

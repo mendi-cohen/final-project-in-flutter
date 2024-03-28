@@ -87,7 +87,7 @@ Widget build(BuildContext context) {
               children: [
                 OptionCard(
                   title: " הכנסות  ",
-                  icon: Icons.account_balance_wallet,
+                  icon: Icons.attach_money,
                   onTap: () {
                     Navigator.push(
                       context,
@@ -97,7 +97,7 @@ Widget build(BuildContext context) {
                 ),
                 OptionCard(
                   title: " הוצאות ",
-                  icon: Icons.add_circle,
+                  icon: Icons.shopping_cart,
                   onTap: () {
                     Navigator.push(
                       context,
@@ -109,7 +109,7 @@ Widget build(BuildContext context) {
             ),
                    OptionCard(
                   title: " צדקה / מעשרות ",
-                  icon: Icons.add_circle,
+                  icon: Icons.volunteer_activism,
                   onTap: () {
                     Navigator.push(
                       context,
