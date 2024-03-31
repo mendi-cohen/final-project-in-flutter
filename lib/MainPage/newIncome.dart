@@ -12,7 +12,9 @@ import '../Services/deleted.dart';
 
 class IncomeEntryWidget extends StatefulWidget {
   final Map<String, dynamic> userData;
-  const IncomeEntryWidget({super.key, required this.userData});
+  final Function() onSuccess;
+  const IncomeEntryWidget({super.key, required this.userData ,required this.onSuccess});
+
   @override
   _IncomeEntryWidgetState createState() => _IncomeEntryWidgetState();
 }
@@ -64,7 +66,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
 ///// שליחת כל הכנסה למסד הנתונים
 
   Future<void> _submitDataToDatabase() async {
-    final url = Uri.parse('http://localhost:3007/income/sendincome');
+    final url = Uri.parse('http://10.0.2.2:3007/income/sendincome');
 
     final amount = _amountController.text;
     final source = _sourceController.text;
@@ -106,6 +108,8 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
       _sourceController.clear();
       setState(() {
         _isMonthly = false;
+         _fetchData();
+         widget.onSuccess();
       });
     }
     else{
@@ -118,7 +122,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
 
   Future<void> _fetchData() async {
     final response = await http.get(Uri.parse(
-        'http://localhost:3007/income/getincomeByuser_id/${widget.userData['user']['id']}'));
+        'http://10.0.2.2:3007/income/getincomeByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['incomsFdb'];
@@ -221,10 +225,11 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                 shrinkWrap: true,
                 itemCount: dataList.length,
                 itemBuilder: (BuildContext context, int index) {
+                      int reversedIndex = dataList.length - 1 - index; 
                   String formattedDate = DateFormat('dd/MM/yyyy')
-                      .format(DateTime.parse(dataList[index]['createdAt']));
+                      .format(DateTime.parse(dataList[reversedIndex]['createdAt']));
                   String formattedTime = DateFormat('HH:mm')
-                      .format(DateTime.parse(dataList[index]['createdAt']));
+                      .format(DateTime.parse(dataList[reversedIndex]['createdAt']));
 
                   return Card(
                     elevation: 4,
@@ -238,7 +243,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                       tileColor: Colors.white.withOpacity(0.1),
                       textColor: const Color.fromARGB(255, 75, 27, 222),
                       title: Text(
-                        'סכום ההכנסה: ${dataList[index]['income_value']} ש"ח',
+                        'סכום ההכנסה: ${dataList[reversedIndex]['income_value']} ש"ח',
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18
@@ -248,7 +253,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'מקור: ${dataList[index]['source']}',
+                            'מקור: ${dataList[reversedIndex]['source']}',
                             style: const TextStyle(
                                 fontStyle: FontStyle.italic, fontSize: 15),
                           ),

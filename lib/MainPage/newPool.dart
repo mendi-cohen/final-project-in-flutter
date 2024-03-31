@@ -10,7 +10,8 @@ import '../Services/deleted.dart';
 
 class PoolWidget extends StatefulWidget {
   final Map<String, dynamic> userData;
-  const PoolWidget({super.key, required this.userData});
+  final Function() onSuccess;
+  const PoolWidget({super.key, required this.userData,required this.onSuccess});
   @override
   poolWidgetState createState() => poolWidgetState();
 }
@@ -62,7 +63,7 @@ class poolWidgetState extends State<PoolWidget> {
   //// שליחת משיכה למסד הנתונים
 
   Future<void> _submitDataToDatabase() async {
-    final url = Uri.parse('http://localhost:3007/pool/sendthepool');
+    final url = Uri.parse('http://10.0.2.2:3007/pool/sendthepool');
 
     final amount = _amountController.text;
     final source = _sourceController.text;
@@ -105,8 +106,12 @@ class poolWidgetState extends State<PoolWidget> {
           context, 'הצלחה', 'המשיכה בוצעה בהצלחה!', Colors.green);
       _amountController.clear();
       _sourceController.clear();
+    _fetchData();
+
       setState(() {
         _isMonthly = false;
+        _fetchData();
+        widget.onSuccess();
       });
     } else {
       await DialogService.showMessageDialog(
@@ -118,7 +123,7 @@ class poolWidgetState extends State<PoolWidget> {
 
   Future<void> _fetchData() async {
     final response = await http.get(Uri.parse(
-        'http://localhost:3007/pool/getpoolByuser_id/${widget.userData['user']['id']}'));
+        'http://10.0.2.2:3007/pool/getpoolByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['PoolFdb'];
@@ -203,7 +208,7 @@ class poolWidgetState extends State<PoolWidget> {
                     )),
                 Container(
                   color: Colors.white.withOpacity(
-                      0.6), // כאן אתה יכול לשנות את השקיפות והצבע כרצונך
+                      0.6), 
                   child: const Center(
                     child: Text(
                       "הוצאות קודמות :",
@@ -222,10 +227,11 @@ class poolWidgetState extends State<PoolWidget> {
                     shrinkWrap: true,
                     itemCount: dataList.length,
                     itemBuilder: (BuildContext context, int index) {
+                      int reversedIndex = dataList.length - 1 - index; 
                       String formattedDate = DateFormat('dd/MM/yyyy')
-                          .format(DateTime.parse(dataList[index]['createdAt']));
+                          .format(DateTime.parse(dataList[reversedIndex]['createdAt']));
                       String formattedTime = DateFormat('HH:mm')
-                          .format(DateTime.parse(dataList[index]['createdAt']));
+                          .format(DateTime.parse(dataList[reversedIndex]['createdAt']));
                       return Card(
                         elevation: 10,
                         margin: const EdgeInsets.symmetric(
@@ -238,7 +244,7 @@ class poolWidgetState extends State<PoolWidget> {
                             tileColor: Colors.white.withOpacity(0.1),
                             textColor: Colors.redAccent,
                             title: Text(
-                              'סכום ההוצאה: ${dataList[index]['pool_value']} ש"ח',
+                              'סכום ההוצאה: ${dataList[reversedIndex]['pool_value']} ש"ח',
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 18),
                             ),
@@ -246,7 +252,7 @@ class poolWidgetState extends State<PoolWidget> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'סיבה: ${dataList[index]['resion']}',
+                                  'סיבה: ${dataList[reversedIndex]['resion']}',
                                   style: const TextStyle(
                                       fontStyle: FontStyle.italic,
                                       fontSize: 15),
@@ -269,7 +275,7 @@ class poolWidgetState extends State<PoolWidget> {
                               ],
                             ),
                             trailing: DelWidget(
-                                ObjectId: dataList[index]['id'].toString(),
+                                ObjectId: dataList[reversedIndex]['id'].toString(),
                                 path: 'pool')),
                       );
                     },

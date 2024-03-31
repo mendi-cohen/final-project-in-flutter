@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import "../Services/MainCards.dart";
 import "newPool.dart";
@@ -8,8 +10,8 @@ import '../Services/AllTugether.dart';
 import './charidy.dart';
 
 class MyMainPage extends StatefulWidget {
-   final Map<String, dynamic> userData; 
-  const MyMainPage({super.key, required this.userData}) ;
+  final Map<String, dynamic> userData;
+  const MyMainPage({super.key, required this.userData});
   @override
   State<MyMainPage> createState() => _MyMainPageState();
 }
@@ -17,21 +19,17 @@ class MyMainPage extends StatefulWidget {
 class _MyMainPageState extends State<MyMainPage> {
   List<dynamic> poolList = [];
   List<dynamic> incomeList = [];
-
   @override
   
-
-void didChangeDependencies() {
-  super.didChangeDependencies();
-  _fetchPoolData();
-  _fetchIncomeData();
-  
-}
-
+  void initState() {
+    super.initState();
+    _fetchPoolData();
+    _fetchIncomeData();
+  }
 
   Future<void> _fetchPoolData() async {
     final response = await http.get(Uri.parse(
-        'http://localhost:3007/pool/getpoolByuser_id/${widget.userData['user']['id']}'));
+        'http://10.0.2.2:3007/pool/getpoolByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['PoolFdb'];
@@ -39,15 +37,13 @@ void didChangeDependencies() {
         poolList = List<Map<String, dynamic>>.from(
             data.map((entry) => entry as Map<String, dynamic>));
       });
-      print("KKKKKKKKKKK$poolList");
-
+     
     }
   }
 
-
-    Future<void> _fetchIncomeData() async {
+  Future<void> _fetchIncomeData() async {
     final response = await http.get(Uri.parse(
-        'http://localhost:3007/income/getincomeByuser_id/${widget.userData['user']['id']}'));
+        'http://10.0.2.2:3007/income/getincomeByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['incomsFdb'];
@@ -55,12 +51,11 @@ void didChangeDependencies() {
         incomeList = List<Map<String, dynamic>>.from(
             data.map((entry) => entry as Map<String, dynamic>));
       });
-      print("OOOOOOOOOO$incomeList");
+     
     }
   }
-  
 
-Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Center(
@@ -73,12 +68,11 @@ Widget build(BuildContext context) {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            
             image: AssetImage('assets/images/mainImage.jpeg'),
             fit: BoxFit.cover,
           ),
         ),
-        child:  GridView.count(
+        child: GridView.count(
           crossAxisCount: 1,
           childAspectRatio: 3,
           mainAxisSpacing: 20,
@@ -91,7 +85,9 @@ Widget build(BuildContext context) {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => IncomeEntryWidget(userData:widget.userData)),
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              IncomeEntryWidget(userData: widget.userData ,onSuccess: _fetchIncomeData,)),
                     );
                   },
                 ),
@@ -101,28 +97,32 @@ Widget build(BuildContext context) {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => PoolWidget(userData:widget.userData)),
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              PoolWidget(userData: widget.userData,onSuccess: _fetchPoolData)),
                     );
                   },
                 ),
               ],
             ),
-                   OptionCard(
-                  title: " צדקה / מעשרות ",
-                  icon: Icons.volunteer_activism,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => CharidyWidget(userData:widget.userData)),
-                    );
-                  },
-                ),
+            OptionCard(
+              title: " צדקה / מעשרות ",
+              icon: Icons.volunteer_activism,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          CharidyWidget(userData: widget.userData)),
+                );
+              },
+            ),
             const SizedBox(),
             const SizedBox(),
             Align(
               alignment: Alignment.bottomCenter,
               child: Card(
-                child: AllTuether.buildTotalAccount(incomeList , poolList),
+                child: AllTuether.buildTotalAccount(incomeList, poolList),
               ),
             ),
           ],

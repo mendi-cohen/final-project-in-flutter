@@ -25,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _fetchStoredPasswords() async {
-    final url = Uri.parse('http://localhost:3007/enterUser');
+    final url = Uri.parse('http://10.0.2.2:3007/enterUser');
     final password = _passwordController.text;
     final email = _emailController.text;
 
@@ -100,4 +100,4 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-/// http://localhost:3007
+/// http://10.0.2.2:3007
