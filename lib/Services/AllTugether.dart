@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:finalproject/Services/not.dart';
+import 'package:finalproject/Services/Notification.dart';
 
 
 class AllTuether {
@@ -21,7 +21,7 @@ class AllTuether {
 
         if (accountStatus < 0 && isFirstAppLaunch) {
       NotificationService()
-              .showNotification(title: 'אופס יש לנו בעיה ', body: 'אתה במינוס !!!');
+              .showNotification(title: 'אופס יש לנו בעיה ', body: 'מצב החשבון: ${accountStatus.toStringAsFixed(1)}');
               isFirstAppLaunch = false;
     }
     return Container(

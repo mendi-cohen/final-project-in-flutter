@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'EnterUsers/EnterPage.dart';
-import './Services/not.dart';
+import 'Services/Notification.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   NotificationService().initNotification();
+  initializeDateFormatting('he');
   runApp(const MyApp());
 }
 

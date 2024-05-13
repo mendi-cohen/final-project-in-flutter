@@ -34,7 +34,8 @@ dependencies:
   http: ^0.13.3
   flutter_dotenv: ^5.0.2
   intl: ^0.17.0
-  # flutter_email_sender: ^6.0.2
+  localstorage: ^5.0.0
+  
 
 
   # The following adds the Cupertino Icons font to your application.

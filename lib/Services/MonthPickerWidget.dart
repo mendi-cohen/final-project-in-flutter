@@ -4,14 +4,14 @@ import 'package:intl/intl.dart';
 class MonthPickerWidget extends StatefulWidget {
   final Function(String) onMonthSelected;
 
-  const MonthPickerWidget({super.key, required this.onMonthSelected});
+  const MonthPickerWidget({Key? key, required this.onMonthSelected}) : super(key: key);
 
   @override
   _MonthPickerWidgetState createState() => _MonthPickerWidgetState();
 }
 
 class _MonthPickerWidgetState extends State<MonthPickerWidget> {
-  String _selectedMonth = '';
+  late String _selectedMonth;
   
   final Map<String, String> monthTranslations = {
     'January': ' 01 ינואר',
@@ -29,12 +29,20 @@ class _MonthPickerWidgetState extends State<MonthPickerWidget> {
   };
 
   @override
+  void initState() {
+    super.initState();
+    // Get the current month name
+    DateTime now = DateTime.now();
+    _selectedMonth = DateFormat.MMMM().format(now);
+  }
+
+  @override
   Widget build(BuildContext context) {
     List<String> months = MonthProvider.getMonths();
 
     return DropdownButton<String>(
       hint: const Text(' בחר עד איזה חודש '),
-      value: _selectedMonth.isEmpty ? null : _selectedMonth,
+      value: _selectedMonth,
       onChanged: (String? newValue) {
         setState(() {
           _selectedMonth = newValue!;

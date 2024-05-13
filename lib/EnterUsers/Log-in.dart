@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../MainPage/MyMainPage.dart';
-
+import 'package:localstorage/localstorage.dart';
 
 
 
@@ -28,6 +28,8 @@ class _LoginPageState extends State<LoginPage> {
     final url = Uri.parse('http://10.0.2.2:3007/enterUser');
     final password = _passwordController.text;
     final email = _emailController.text;
+    WidgetsFlutterBinding.ensureInitialized();
+  await initLocalStorage();
 
     final response = await http.post(
       url,
@@ -37,6 +39,9 @@ class _LoginPageState extends State<LoginPage> {
       final userData = json.decode(response.body); 
       widget.onSuccess(userData); 
       MyMainPage(userData: userData);
+      localStorage.setItem('Token', userData['token'].toString());
+
+      
       setState(() {
         Navigator.push(
           context,
@@ -100,4 +105,3 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-/// http://10.0.2.2:3007

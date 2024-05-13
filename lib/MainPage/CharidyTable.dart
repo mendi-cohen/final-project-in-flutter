@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import './Services/All.dart';
-import 'Services/titleForCharidyTable.dart';
+import '../Services/All.dart';
+import '../Services/titleForCharidyTable.dart';
 
 class CharidyTableWidget extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -126,7 +126,7 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
                 title: 'סיכום המעשר החודשי',
               ),
               SizedBox(
-                  height: 200,
+                  height: 220,
                   child: dataListMaaser.isEmpty
                       ? const Center(
                           child: TitleForCharidyTable( title: " אין נתונים זמינים ",color: Colors.black))
@@ -145,13 +145,13 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
                               margin: const EdgeInsets.all(5),
                               child: InkWell(
                                 onTap: () {
-                                  // פעולה בלחיצה על כל פריט - לדוגמה: פתיחת עמוד פרטים
+                             
                                 },
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     CircleAvatar(
-                                      radius: 30,
+                                      radius: 50,
                                       child:
                                           Text('${item['charidy_value']} ש"ח'),
                                     ),
@@ -189,13 +189,13 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
                       'income_value',
                       const Color.fromARGB(255, 234, 215, 36))),
               const SizedBox(
-                height: 80,
+                height: 50,
               ),
               const TitleForCharidyTable(
                 title: 'סיכום הצדקה החודשית',
               ),
               SizedBox(
-                  height: 200,
+                  height: 220,
                   child: dataListCharidy.isEmpty
                       ? const Center(
                           child: TitleForCharidyTable( title: " אין נתונים זמינים ",color: Colors.black) )
@@ -218,7 +218,7 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     CircleAvatar(
-                                      radius: 30,
+                                      radius: 50,
                                       child:
                                           Text('${item['charidy_value']} ש"ח'),
                                     ),

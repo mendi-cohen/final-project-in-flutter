@@ -41,7 +41,7 @@ class DelWidget extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text(' האם אתה בטוח שברצונך למחוק את המחיקה?'),
+          title: const Text(' האם אתה בטוח שברצונך למחוק את הפעולה?'),
           actions: <Widget>[
             TextButton(
               child: const Text( style: TextStyle(fontSize: 20), 'כן'),
@@ -53,7 +53,7 @@ class DelWidget extends StatelessWidget {
             TextButton(
               child: const Text( style: TextStyle(fontSize: 20), 'לא'),
               onPressed: () {
-                Navigator.of(context).pop(); // סגור את חלון הדיאלוג
+                Navigator.of(context).pop(); 
               },
             ),
           ],

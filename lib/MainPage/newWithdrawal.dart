@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -7,16 +5,18 @@ import 'package:intl/intl.dart';
 import '../Services/All.dart';
 import '../Services/Dialog.dart';
 import '../Services/deleted.dart';
+import '../Services/Token.dart';
 
-class PoolWidget extends StatefulWidget {
+class withdrawalWidget extends StatefulWidget {
   final Map<String, dynamic> userData;
   final Function() onSuccess;
-  const PoolWidget({super.key, required this.userData,required this.onSuccess});
+  const withdrawalWidget({super.key, required this.userData, required this.onSuccess}) ;
+
   @override
-  poolWidgetState createState() => poolWidgetState();
+  withdrawalWidgetState createState() => withdrawalWidgetState();
 }
 
-class poolWidgetState extends State<PoolWidget> {
+class withdrawalWidgetState extends State<withdrawalWidget> {
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _sourceController = TextEditingController();
   bool _isMonthly = false;
@@ -40,8 +40,7 @@ class poolWidgetState extends State<PoolWidget> {
           labelText: labelText,
           hintText: hintText,
           border: InputBorder.none,
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
           // צבע טקסט
           labelStyle: const TextStyle(
             color: Colors.black87,
@@ -57,7 +56,8 @@ class poolWidgetState extends State<PoolWidget> {
   @override
   void initState() {
     super.initState();
-    _fetchData();
+    TokenManager.scheduleTokenDeletion();
+     _fetchData();
   }
 
   //// שליחת משיכה למסד הנתונים
@@ -75,12 +75,16 @@ class poolWidgetState extends State<PoolWidget> {
           title: const Center(child: Text('שגיאה!')),
           backgroundColor: Colors.red,
           content: const Text(
-              style: TextStyle(fontSize: 18),
-              ' אנא מלא את כל השדות עם ערכים תקינים '),
+            ' אנא מלא את כל השדות עם ערכים תקינים ',
+            style: TextStyle(fontSize: 18),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text(style: TextStyle(fontSize: 15), 'אישור'),
+              child: const Text(
+                'אישור',
+                style: TextStyle(fontSize: 15),
+              ),
             ),
           ],
         ),
@@ -106,7 +110,7 @@ class poolWidgetState extends State<PoolWidget> {
           context, 'הצלחה', 'המשיכה בוצעה בהצלחה!', Colors.green);
       _amountController.clear();
       _sourceController.clear();
-    _fetchData();
+      _fetchData();
 
       setState(() {
         _isMonthly = false;
@@ -119,7 +123,7 @@ class poolWidgetState extends State<PoolWidget> {
     }
   }
 
-//// הצגת המשיכות הקודמות
+  //// הצגת המשיכות הקודמות
 
   Future<void> _fetchData() async {
     final response = await http.get(Uri.parse(
@@ -137,37 +141,40 @@ class poolWidgetState extends State<PoolWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('  שלום לך ${widget.userData['user']['name']}'),
-        ),
-        body: SingleChildScrollView(
-          child: Container(
+      appBar: AppBar(
+        title: Text('  שלום לך ${widget.userData['user']['name']}'),
+      ),
+      body: Stack(
+        children: [
+          Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/images/poolImage.jpeg'),
                 fit: BoxFit.cover,
               ),
             ),
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _buildTextField(
-                  controller: _amountController,
-                  labelText: ' סכום(מספרים בלבד) ',
-                  hintText: 'הכנס סכום',
-                  keyboardType: TextInputType.number,
-                ),
-                const SizedBox(height: 10),
-                _buildTextField(
-                  controller: _sourceController,
-                  labelText: ' סיבת ההוצאה ',
-                  hintText: 'סיבת ההוצאה ',
-                ),
-                const SizedBox(height: 10),
-                Container(
-                    decoration:
-                        BoxDecoration(color: Colors.white.withOpacity(0.9)),
+          ),
+          SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildTextField(
+                    controller: _amountController,
+                    labelText: ' סכום(מספרים בלבד) ',
+                    hintText: 'הכנס סכום',
+                    keyboardType: TextInputType.number,
+                  ),
+                  const SizedBox(height: 10),
+                  _buildTextField(
+                    controller: _sourceController,
+                    labelText: ' סיבת ההוצאה ',
+                    hintText: 'סיבת ההוצאה ',
+                  ),
+                  const SizedBox(height: 10),
+                  Container(
+                    decoration: BoxDecoration(color: Colors.white.withOpacity(0.9)),
                     child: Row(
                       children: [
                         Checkbox(
@@ -187,11 +194,12 @@ class poolWidgetState extends State<PoolWidget> {
                           ),
                         ),
                       ],
-                    )),
-                const SizedBox(height: 10),
-                ElevatedButton(
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  ElevatedButton(
                     onPressed: () {
-                      _submitDataToDatabase();
+                      TokenManager.checkToken(context, _submitDataToDatabase);
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.all(10),
@@ -205,87 +213,81 @@ class poolWidgetState extends State<PoolWidget> {
                     child: const Text(
                       'משוך',
                       style: TextStyle(color: Colors.white, fontSize: 16),
-                    )),
-                Container(
-                  color: Colors.white.withOpacity(
-                      0.6), 
-                  child: const Center(
-                    child: Text(
-                      "הוצאות קודמות :",
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 18, 11, 11),
+                    ),
+                  ),
+                  Container(
+                    color: Colors.white.withOpacity(0.6),
+                    child: const Center(
+                      child: Text(
+                        "הוצאות קודמות :",
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 18, 11, 11),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 450,
-                  child: ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    itemCount: dataList.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      int reversedIndex = dataList.length - 1 - index; 
-                      String formattedDate = DateFormat('dd/MM/yyyy')
-                          .format(DateTime.parse(dataList[reversedIndex]['createdAt']));
-                      String formattedTime = DateFormat('HH:mm')
-                          .format(DateTime.parse(dataList[reversedIndex]['createdAt']));
-                      return Card(
-                        elevation: 10,
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: ListTile(
+                  SizedBox(
+                    height: 450,
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: dataList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        int reversedIndex = dataList.length - 1 - index;
+                        String formattedDate = DateFormat('dd/MM/yyyy')
+                            .format(DateTime.parse(dataList[reversedIndex]['createdAt']));
+                        String formattedTime = DateFormat('HH:mm')
+                            .format(DateTime.parse(dataList[reversedIndex]['createdAt']));
+                        return Card(
+                          elevation: 10,
+                          margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: ListTile(
                             contentPadding: const EdgeInsets.all(16),
                             tileColor: Colors.white.withOpacity(0.1),
                             textColor: Colors.redAccent,
                             title: Text(
                               'סכום ההוצאה: ${dataList[reversedIndex]['pool_value']} ש"ח',
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18),
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                             ),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   'סיבה: ${dataList[reversedIndex]['resion']}',
-                                  style: const TextStyle(
-                                      fontStyle: FontStyle.italic,
-                                      fontSize: 15),
+                                  style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 15),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
                                   'תאריך ביצוע העסקה : $formattedDate',
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    fontStyle: FontStyle.italic,
-                                  ),
+                                  style: const TextStyle(fontSize: 15, fontStyle: FontStyle.italic),
                                 ),
                                 Text(
                                   'שעת ביצוע העסקה : $formattedTime',
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    fontStyle: FontStyle.italic,
-                                  ),
+                                  style: const TextStyle(fontSize: 15, fontStyle: FontStyle.italic),
                                 ),
                               ],
                             ),
                             trailing: DelWidget(
-                                ObjectId: dataList[reversedIndex]['id'].toString(),
-                                path: 'pool')),
-                      );
-                    },
+                              ObjectId: dataList[reversedIndex]['id'].toString(),
+                              path: 'pool',
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
-                ),
-                All.buildTotalIncome(
-                    dataList, 'סך ההוצאות הכולל', 'pool_value', Colors.red)
-              ],
+                  All.buildTotalIncome(dataList, 'סך ההוצאות הכולל', 'pool_value', Colors.red),
+                ],
+              ),
             ),
           ),
-        ));
+        ],
+      ),
+    );
   }
 }

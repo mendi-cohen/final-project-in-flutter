@@ -1,13 +1,13 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import "../Services/MainCards.dart";
-import "newPool.dart";
+import "newWithdrawal.dart";
 import "newIncome.dart";
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../Services/AllTugether.dart';
-import './charidy.dart';
+import 'package:localstorage/localstorage.dart';
+import './BottomNavigation.dart';
 
 class MyMainPage extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -20,11 +20,12 @@ class _MyMainPageState extends State<MyMainPage> {
   List<dynamic> poolList = [];
   List<dynamic> incomeList = [];
   @override
-  
   void initState() {
     super.initState();
     _fetchPoolData();
     _fetchIncomeData();
+   
+    
   }
 
   Future<void> _fetchPoolData() async {
@@ -32,12 +33,13 @@ class _MyMainPageState extends State<MyMainPage> {
         'http://10.0.2.2:3007/pool/getpoolByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
+      final token = localStorage.getItem('Token');
+      print('the token is : $token');
       final data = jsonDecode(response.body)['PoolFdb'];
       setState(() {
         poolList = List<Map<String, dynamic>>.from(
             data.map((entry) => entry as Map<String, dynamic>));
       });
-     
     }
   }
 
@@ -51,7 +53,6 @@ class _MyMainPageState extends State<MyMainPage> {
         incomeList = List<Map<String, dynamic>>.from(
             data.map((entry) => entry as Map<String, dynamic>));
       });
-     
     }
   }
 
@@ -85,9 +86,21 @@ class _MyMainPageState extends State<MyMainPage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              IncomeEntryWidget(userData: widget.userData ,onSuccess: _fetchIncomeData,)),
+                      PageRouteBuilder(
+                        pageBuilder: (_, __, ___) => IncomeEntryWidget(
+                          userData: widget.userData,
+                          onSuccess: _fetchIncomeData,
+                        ),
+                        transitionsBuilder: (_, animation, __, child) {
+                          return SlideTransition(
+                            position: Tween<Offset>(
+                              begin: const Offset(1.0, 0.0),
+                              end: Offset.zero,
+                            ).animate(animation),
+                            child: child,
+                          );
+                        },
+                      ),
                     );
                   },
                 ),
@@ -97,9 +110,21 @@ class _MyMainPageState extends State<MyMainPage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              PoolWidget(userData: widget.userData,onSuccess: _fetchPoolData)),
+                      PageRouteBuilder(
+                        pageBuilder: (_, __, ___) => withdrawalWidget(
+                          userData: widget.userData,
+                          onSuccess: _fetchPoolData,
+                        ),
+                        transitionsBuilder: (_, animation, __, child) {
+                          return SlideTransition(
+                            position: Tween<Offset>(
+                              begin: const Offset(-1.0, 0.0),
+                              end: Offset.zero,
+                            ).animate(animation),
+                            child: child,
+                          );
+                        },
+                      ),
                     );
                   },
                 ),
@@ -111,9 +136,20 @@ class _MyMainPageState extends State<MyMainPage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          CharidyWidget(userData: widget.userData)),
+                  PageRouteBuilder(
+                    pageBuilder: (_, __, ___) => BottomNavigationDemo(
+                      userData: widget.userData,
+                    ),
+                    transitionsBuilder: (_, animation, __, child) {
+                      return SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(0.0, 1.0),
+                          end: Offset.zero,
+                        ).animate(animation),
+                        child: child,
+                      );
+                    },
+                  ),
                 );
               },
             ),
