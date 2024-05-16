@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import './env.dart';
+import 'Dialog.dart';
 
-Future<void> deleteCharidy(String ObjectId, String path, BuildContext context) async {
+Future<void> deleteObject(String ObjectId, String path, BuildContext context ,Function DEL) async {
   try {
-    String url = 'http://10.0.2.2:3007/$path/remove/$ObjectId';
+    String url = '$PATH/$path/remove/$ObjectId';
     final response = await http.delete(Uri.parse(url));
 
     if (response.statusCode == 200) {
-      print('האובייקט נמחק בהצלחה');
+      DialogService.showMessageDialog(context,"הצלחה" , "הנתונים הוסרו בהצלחה", Colors.green );
+      DEL();
     } else {
-      print('שגיאה במחיקת האובייקט: ${response.statusCode}');
+      DialogService.showMessageDialog(context,"אופס!" , " אירעה שגיאה במחיקת הנתונים ", Colors.red);
     }
   } catch (error) {
     print('שגיאה במחיקת האובייקט: $error');
@@ -19,11 +22,13 @@ Future<void> deleteCharidy(String ObjectId, String path, BuildContext context) a
 class DelWidget extends StatelessWidget {
   final String ObjectId;
   final String path;
+  Function DEL;
 
-  const DelWidget({
+   DelWidget({
     super.key,
     required this.ObjectId,
     required this.path,
+    required this.DEL,
   });
 
   @override
@@ -46,8 +51,8 @@ class DelWidget extends StatelessWidget {
             TextButton(
               child: const Text( style: TextStyle(fontSize: 20), 'כן'),
               onPressed: () {
-                deleteCharidy(ObjectId, path, context);
                 Navigator.of(context).pop(); 
+                deleteObject(ObjectId, path, context , DEL);
               },
             ),
             TextButton(

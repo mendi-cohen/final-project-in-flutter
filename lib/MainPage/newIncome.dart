@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:convert';
-import '../Services/All.dart';
+import '../Services/Sum.dart';
 import '../Services/Dialog.dart';
 import '../Services/deleted.dart';
 import '../Services/Token.dart';
+import '../Services/env.dart';
 
 class IncomeEntryWidget extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -62,7 +63,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
   }
 
   Future<void> _submitDataToDatabase() async {
-    final url = Uri.parse('http://10.0.2.2:3007/income/sendincome');
+    final url = Uri.parse('$PATH/income/sendincome');
 
     final amount = _amountController.text;
     final source = _sourceController.text;
@@ -90,7 +91,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
       );
       return;
     }
-    final isMonthly = _isMonthly.toString();
+    final isMonthly = _isMonthly ? "קבועה " : "חד-פעמית";
 
     final response = await http.post(
       url,
@@ -119,7 +120,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
 
   Future<void> _fetchData() async {
     final response = await http.get(Uri.parse(
-        'http://10.0.2.2:3007/income/getincomeByuser_id/${widget.userData['user']['id']}'));
+        '$PATH/income/getincomeByuser_id/${widget.userData['user']['id']}'));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['incomsFdb'];
       setState(() {
@@ -205,11 +206,13 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ),
+                   const SizedBox(height: 20,),
+                    All.buildTotalIncome(dataList, 'סך ההכנסות הכולל', 'income_value', Colors.blue),
                   Container(
                     color: Colors.white.withOpacity(0.6),
                     child: const Center(
                       child: Text(
-                        "הכנסות קודמות :",
+                        " פירוט הכנסות  :",
                         style: TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.bold,
@@ -219,15 +222,16 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                     ),
                   ),
                   SizedBox(
-                    height: 450,
+                    height: MediaQuery.of(context).size.height ,
                     child: ListView.builder(
                       scrollDirection: Axis.vertical,
+                      physics: const AlwaysScrollableScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: dataList.length,
                       itemBuilder: (BuildContext context, int index) {
                         int reversedIndex = dataList.length - 1 - index;
                         String formattedDate = DateFormat('dd/MM/yyyy').format(DateTime.parse(dataList[reversedIndex]['createdAt']));
-                        String formattedTime = DateFormat('HH:mm').format(DateTime.parse(dataList[reversedIndex]['createdAt']));
+                      
 
                         return Card(
                           elevation: 4,
@@ -236,7 +240,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: ListTile(
-                            contentPadding: const EdgeInsets.all(16),
+                            contentPadding: const EdgeInsets.all(28),
                             tileColor: Colors.white.withOpacity(0.1),
                             textColor: const Color.fromARGB(255, 75, 27, 222),
                             title: Text(
@@ -248,26 +252,31 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                               children: [
                                 Text(
                                   'מקור: ${dataList[reversedIndex]['source']}',
-                                  style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 15),
+                                  style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 18),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  'תאריך ההכנסה : $formattedDate',
-                                  style: const TextStyle(fontSize: 15, fontStyle: FontStyle.italic),
+                                  'תאריך  ההכנסה : $formattedDate',
+                                  style: const TextStyle(fontSize: 18, fontStyle: FontStyle.italic),
                                 ),
-                                Text(
-                                  'שעת ההכנסה : $formattedTime',
-                                  style: const TextStyle(fontSize: 15, fontStyle: FontStyle.italic),
-                                ),
+                                 const SizedBox(height: 4),
+                                    Text(
+                                      ' סטטוס פעולה : ${dataList[reversedIndex]['monstli']}',
+                                      style: const  TextStyle(
+                                        fontStyle: FontStyle.italic,
+                                        fontSize: 18,
+                                      ),
+                                    ),
                               ],
                             ),
-                            trailing: DelWidget(ObjectId: dataList[index]['id'].toString(), path: 'income'),
+                            trailing: DelWidget(ObjectId: dataList[index]['id'].toString(), path: 'income' , DEL: _fetchData, ),
                           ),
                         );
                       },
                     ),
                   ),
-                  All.buildTotalIncome(dataList, 'סך ההכנסות הכולל', 'income_value', Colors.blue),
+                
+                
                 ],
               ),
             ),

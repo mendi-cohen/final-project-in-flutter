@@ -1,14 +1,16 @@
-// ignore_for_file: use_build_context_synchronously, unnecessary_cast
+// ignore_for_file: use_build_context_synchronously, unnecessary_cast, prefer_final_fields
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:convert';
-import '../Services/All.dart';
+import '../Services/Sum.dart';
 import '../Services/Dialog.dart';
 import '../Services/deleted.dart';
 import '../Services/MonthPickerWidget.dart';
 import '../Services/Token.dart';
+import '../Services/env.dart';
+
 
 class CharidyWidget extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -24,6 +26,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
   List<dynamic> dataList = [];
   String? _selectedOption = 'חד פעמי';
   String? _selectedMonth;
+  String? _selectedYear =  DateFormat.y().format(DateTime.now());
 
   Widget _buildTextField({
     required TextEditingController controller,
@@ -69,7 +72,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
       builder: (BuildContext context) {
         String? selectedMonth = DateFormat('MMMM MM').format(DateTime.now());
         return AlertDialog(
-          title: const Text('בחירת חודש'),
+          title: const Text( ' עד איזה חודש התרומה ?  (כולל)' ),
           content: MonthPickerWidget(
             onMonthSelected: (month) {
               selectedMonth = month;
@@ -89,13 +92,14 @@ class _CharidyWidgetState extends State<CharidyWidget> {
       if (selectedMonth != null) {
         setState(() {
           _selectedMonth = selectedMonth;
+          
         });
       }
     });
   }
 
   Future<void> _submitDataToDatabase() async {
-    final url = Uri.parse('http://10.0.2.2:3007/charidy/sendthecharidy');
+    final url = Uri.parse('$PATH/charidy/sendthecharidy');
     final type = _isMaaserSelected ? 'מעשר' : 'צדקה';
     final amount = _amountController.text;
     final source = _sourceController.text;
@@ -142,7 +146,47 @@ class _CharidyWidgetState extends State<CharidyWidget> {
         );
         return;
       }
+      switch (_selectedMonth) {
+        case 'January':
+          _selectedMonth = '1/$_selectedYear';
+          break;
+        case 'February':
+          _selectedMonth = '2/$_selectedYear';
+          break;
+        case 'March':
+          _selectedMonth = '3/$_selectedYear';
+          break;
+        case 'April':
+          _selectedMonth = '4/$_selectedYear';
+          break;
+        case 'May':
+          _selectedMonth = '5/$_selectedYear';
+          break;
+        case 'June':
+          _selectedMonth = '6/$_selectedYear';
+          break;
+        case 'July':
+          _selectedMonth = '7/$_selectedYear';
+          break;
+        case 'August':
+          _selectedMonth = '8/$_selectedYear';
+          break;
+        case 'September':
+          _selectedMonth = '9/$_selectedYear';
+          break;
+        case 'October':
+          _selectedMonth = '10/$_selectedYear';
+          break;
+        case 'November':
+          _selectedMonth = '11/$_selectedYear';
+          break;
+        case 'December':
+          _selectedMonth = '12/$_selectedYear';
+          break;
+       
+      }
       postData = _selectedMonth;
+  
     }
 
     final response = await http.post(
@@ -174,7 +218,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
 
   Future<void> _fetchData() async {
     final response = await http.get(Uri.parse(
-        'http://10.0.2.2:3007/charidy/getcharidyByuser_id/${widget.userData['user']['id']}'));
+        '$PATH/charidy/getcharidyByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['CharidyFdb'];
@@ -182,6 +226,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
         dataList = List<Map<String, dynamic>>.from(
             data.map((entry) => entry as Map<String, dynamic>));
       });
+  
     }
   }
 
@@ -360,8 +405,10 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                     ),
                   ),
                   const SizedBox(
-                    height: 2,
+                    height: 20,
                   ),
+                  All.buildTotalIncome(dataList, 'סך התרומות הכולל',
+                      'charidy_value', const Color.fromARGB(255, 27, 222, 73)),
                   Container(
                     color: Colors.white.withOpacity(0.6),
                     child: const Center(
@@ -436,7 +483,8 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                                 ),
                                 trailing: DelWidget(
                                   ObjectId: item['id'].toString(),
-                                  path: 'charidy',
+                                  path: 'charidy'
+                                , DEL: _fetchData,
                                 ),
                               ),
                             ),
@@ -448,9 +496,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                   const SizedBox(
                     height: 20,
                   ),
-                  All.buildTotalIncome(dataList, 'סך התרומות הכולל',
-                      'charidy_value', const Color.fromARGB(255, 27, 222, 73)),
-                  const SizedBox(height: 5),
+                  
                 ],
               ),
             ),

@@ -8,6 +8,7 @@ import 'dart:convert';
 import '../Services/AllTugether.dart';
 import 'package:localstorage/localstorage.dart';
 import './BottomNavigation.dart';
+import '../Services/env.dart';
 
 class MyMainPage extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -30,7 +31,7 @@ class _MyMainPageState extends State<MyMainPage> {
 
   Future<void> _fetchPoolData() async {
     final response = await http.get(Uri.parse(
-        'http://10.0.2.2:3007/pool/getpoolByuser_id/${widget.userData['user']['id']}'));
+        '$PATH/pool/getpoolByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final token = localStorage.getItem('Token');
@@ -45,7 +46,7 @@ class _MyMainPageState extends State<MyMainPage> {
 
   Future<void> _fetchIncomeData() async {
     final response = await http.get(Uri.parse(
-        'http://10.0.2.2:3007/income/getincomeByuser_id/${widget.userData['user']['id']}'));
+        '$PATH/income/getincomeByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['incomsFdb'];
@@ -143,9 +144,10 @@ class _MyMainPageState extends State<MyMainPage> {
                     transitionsBuilder: (_, animation, __, child) {
                       return SlideTransition(
                         position: Tween<Offset>(
-                          begin: const Offset(0.0, 1.0),
+                          begin: const Offset(1.0, 1.0),
                           end: Offset.zero,
                         ).animate(animation),
+                        
                         child: child,
                       );
                     },

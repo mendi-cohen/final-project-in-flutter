@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../Services/All.dart';
+import '../Services/Sum.dart';
 import '../Services/titleForCharidyTable.dart';
+import '../Services/env.dart';
 
 class CharidyTableWidget extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -20,7 +21,7 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
 
   Future<void> _fetchDataMaaser() async {
     final response = await http.get(Uri.parse(
-        'http://10.0.2.2:3007/charidy/getMaaserByuser_id/${widget.userData['user']['id']}'));
+        '$PATH/charidy/getMaaserByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['MaaserFdb'];
@@ -33,7 +34,7 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
 
   Future<void> _fetchDataIncome() async {
     final response = await http.get(Uri.parse(
-        'http://10.0.2.2:3007/income/getincomeByuser_id/${widget.userData['user']['id']}'));
+        '$PATH/income/getincomeByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['incomsFdb'];
@@ -46,7 +47,7 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
 
   Future<void> _fetchDataCharidy() async {
     final response = await http.get(Uri.parse(
-        'http://10.0.2.2:3007/charidy/getOnlyCharidyByuser_id/${widget.userData['user']['id']}'));
+        '$PATH/charidy/getOnlyCharidyByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['OnlyCharidy'];
@@ -109,13 +110,17 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
       appBar: AppBar(
         title: Text('שלום ${widget.userData['user']['name']}'),
       ),
-      body: Container(
+      body:Stack(
+        children: [ 
+          Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage('assets/images/maaserImage.jpeg'),
               fit: BoxFit.cover,
             ),
-          ),
+          ),),
+          SingleChildScrollView(
+            child: Container(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
@@ -123,7 +128,7 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
                 height: 20,
               ),
               const TitleForCharidyTable(
-                title: 'סיכום המעשר החודשי',
+                title: 'סיכום המעשר החודשי :',
               ),
               SizedBox(
                   height: 220,
@@ -139,7 +144,8 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
                           ),
                           itemCount: dataListMaaser.length,
                           itemBuilder: (context, index) {
-                            final item = dataListMaaser[index];
+                            int reversedIndex = dataListMaaser.length - 1 - index;
+                            final item = dataListMaaser[reversedIndex];
                             return Card(
                               elevation: 3,
                               margin: const EdgeInsets.all(5),
@@ -192,7 +198,7 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
                 height: 50,
               ),
               const TitleForCharidyTable(
-                title: 'סיכום הצדקה החודשית',
+                title: 'סיכום הצדקה החודשית :',
               ),
               SizedBox(
                   height: 220,
@@ -208,7 +214,8 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
                           ),
                           itemCount: dataListCharidy.length,
                           itemBuilder: (context, index) {
-                            final item = dataListCharidy[index];
+                            int reversedIndex = dataListCharidy.length - 1 - index;
+                            final item = dataListCharidy[reversedIndex];
                             return Card(
                               elevation: 3,
                               margin: const EdgeInsets.all(5),
@@ -248,6 +255,8 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
                       const Color.fromARGB(255, 234, 215, 36))),
             ],
           )),
+      )]
+          )
     );
   }
 }

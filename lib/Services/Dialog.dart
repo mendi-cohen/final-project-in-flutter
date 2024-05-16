@@ -37,7 +37,7 @@ class DialogService {
              onPressed: () {
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => EnterPage()),
+    MaterialPageRoute(builder: (context) => const EnterPage()),
   );
 },
               child: const Text(style: TextStyle(fontSize: 18), 'אישור'),
