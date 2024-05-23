@@ -4,16 +4,16 @@ class WelcomeTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(20.0),
+      padding:const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
         color: Colors.blueAccent, // צבע רקע
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(20.0)), // פינות מעוגלות
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(20.0)), // פינות מעוגלות
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.3), // צבע הצל
             spreadRadius: 3, // התפשטות הצל
             blurRadius: 5, // איכות הצל
-            offset: Offset(0, 3), // היסט הצל
+            offset:const Offset(0, 3), // היסט הצל
           ),
         ],
       ),

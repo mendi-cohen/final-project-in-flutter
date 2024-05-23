@@ -208,6 +208,9 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                   ),
                    const SizedBox(height: 20,),
                     All.buildTotalIncome(dataList, 'סך ההכנסות הכולל', 'income_value', Colors.blue),
+                     const SizedBox(
+                    height: 10,
+                  ),
                   Container(
                     color: Colors.white.withOpacity(0.6),
                     child: const Center(

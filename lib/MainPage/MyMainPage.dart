@@ -11,6 +11,7 @@ import './BottomNavigation.dart';
 import '../Services/env.dart';
 import './charidy.dart';
 import './CharidyTable.dart';
+import '../Services/SpecialDate.dart';
 
 class MyMainPage extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -74,10 +75,10 @@ class _MyMainPageState extends State<MyMainPage> {
             fit: BoxFit.cover,
           ),
         ),
-        child: GridView.count(
+        child: Center(child:  GridView.count(
           crossAxisCount: 1,
           childAspectRatio: 3,
-          mainAxisSpacing: 20,
+        
           children: [
             Row(
               children: [
@@ -155,7 +156,7 @@ class _MyMainPageState extends State<MyMainPage> {
                     pageBuilder: (_, __, ___) => BottomNavigationDemo(
                       userData: widget.userData,
                       one: CharidyWidget(userData: widget.userData),
-                      two: CharidyTableWidget(userData: widget.userData),
+                      two:HebrewDateWidget(),
                       three: CharidyTableWidget(userData: widget.userData),
                     ),
                     transitionsBuilder: (_, animation, __, child) {
@@ -180,7 +181,7 @@ class _MyMainPageState extends State<MyMainPage> {
               ),
             ),
           ],
-        ),
+        )),
       ),
     );
   }

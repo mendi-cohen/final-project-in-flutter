@@ -219,7 +219,9 @@ class withdrawalWidgetState extends State<withdrawalWidget> {
                   ),
                   const SizedBox(height: 20),
                   All.buildTotalIncome(dataList, 'סך ההוצאות הכולל', 'pool_value', Colors.red),
-
+                   const SizedBox(
+                    height: 10,
+                  ),
                   Container(
                     color: Colors.white.withOpacity(0.6),
                     child: const Center(

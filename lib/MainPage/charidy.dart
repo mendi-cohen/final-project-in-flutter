@@ -10,7 +10,7 @@ import '../Services/deleted.dart';
 import '../Services/MonthPickerWidget.dart';
 import '../Services/Token.dart';
 import '../Services/env.dart';
-
+import '../Services/SpecialDate.dart';
 
 class CharidyWidget extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -26,7 +26,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
   List<dynamic> dataList = [];
   String? _selectedOption = 'חד פעמי';
   String? _selectedMonth;
-  String? _selectedYear =  DateFormat.y().format(DateTime.now());
+  String? _selectedYear = DateFormat.y().format(DateTime.now());
 
   Widget _buildTextField({
     required TextEditingController controller,
@@ -72,7 +72,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
       builder: (BuildContext context) {
         String? selectedMonth = DateFormat('MMMM MM').format(DateTime.now());
         return AlertDialog(
-          title: const Text( ' עד איזה חודש התרומה ?  (כולל)' ),
+          title: const Text(' עד איזה חודש התרומה ?  (כולל)'),
           content: MonthPickerWidget(
             onMonthSelected: (month) {
               selectedMonth = month;
@@ -92,7 +92,6 @@ class _CharidyWidgetState extends State<CharidyWidget> {
       if (selectedMonth != null) {
         setState(() {
           _selectedMonth = selectedMonth;
-          
         });
       }
     });
@@ -183,10 +182,8 @@ class _CharidyWidgetState extends State<CharidyWidget> {
         case 'December':
           _selectedMonth = '12/$_selectedYear';
           break;
-       
       }
       postData = _selectedMonth;
-  
     }
 
     final response = await http.post(
@@ -226,7 +223,6 @@ class _CharidyWidgetState extends State<CharidyWidget> {
         dataList = List<Map<String, dynamic>>.from(
             data.map((entry) => entry as Map<String, dynamic>));
       });
-  
     }
   }
 
@@ -396,7 +392,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                       shadowColor: Colors.black,
                       backgroundColor: const Color.fromARGB(255, 27, 222, 73),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(50),
                       ),
                     ),
                     child: const Text(
@@ -404,11 +400,13 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
                   ),
+                 
                   const SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   All.buildTotalIncome(dataList, 'סך התרומות הכולל',
-                      'charidy_value', const Color.fromARGB(255, 27, 222, 73)),
+                      'charidy_value',  const Color.fromARGB(255, 27, 222, 73),),
+              const SizedBox(height: 10,),
                   Container(
                     color: Colors.white.withOpacity(0.6),
                     child: const Center(
@@ -418,12 +416,13 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                           fontSize: 25,
                           fontWeight: FontWeight.bold,
                           color: Color.fromARGB(255, 18, 11, 11),
+                          
                         ),
                       ),
                     ),
                   ),
                   SizedBox(
-                    height: 300,
+                    height: 260,
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       reverse: true,
@@ -434,11 +433,11 @@ class _CharidyWidgetState extends State<CharidyWidget> {
 
                           return Container(
                             width: MediaQuery.of(context).size.width,
-                            height: 300,
+                            height: 280,
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 20),
                             child: Card(
-                              elevation: 4,
+                              elevation: 2,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -463,7 +462,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                                         fontSize: 20,
                                       ),
                                     ),
-                                    const SizedBox(height: 4),
+                                    const SizedBox(height: 2),
                                     Text(
                                       'תאריך התחלת התרומה  : $formattedDate',
                                       style: const TextStyle(
@@ -471,7 +470,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                                         fontStyle: FontStyle.italic,
                                       ),
                                     ),
-                                    const SizedBox(height: 4),
+                                    const SizedBox(height: 2),
                                     Text(
                                       ' תאריך סיום : ${item['type']}',
                                       style: const TextStyle(
@@ -483,8 +482,8 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                                 ),
                                 trailing: DelWidget(
                                   ObjectId: item['id'].toString(),
-                                  path: 'charidy'
-                                , DEL: _fetchData,
+                                  path: 'charidy',
+                                  DEL: _fetchData,
                                 ),
                               ),
                             ),
@@ -493,10 +492,16 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
+                      ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => HebrewDateWidget()),
+                      );
+                    },
+                    child: const Text(' לתאריכים מיוחדים החודש: '),
                   ),
-                  
                 ],
               ),
             ),

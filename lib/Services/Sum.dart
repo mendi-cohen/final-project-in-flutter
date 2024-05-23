@@ -9,7 +9,7 @@ class All {
     return Container(
    decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(20), 
+        borderRadius: BorderRadius.circular(50), 
       ),
       width: 380,
       height: 50,

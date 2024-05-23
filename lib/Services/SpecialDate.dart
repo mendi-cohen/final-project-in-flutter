@@ -1,6 +1,3 @@
-// ignore_for_file: library_private_types_in_public_api
-
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -43,28 +40,55 @@ class _HebrewDateWidgetState extends State<HebrewDateWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _fetchHebrewDate(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          final items = snapshot.data as List<Map<String, dynamic>>;
-          return ListView.builder(
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              final item = items[index];
-              final translatedTitle = item['title'];
-              return ListTile(
-                title: Text(translatedTitle),
-                subtitle: Text(item['date']),
-              );
-            },
-          );
-        }
-      },
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('תאריכים מיוחדים החודש '),
+        centerTitle: true,
+      ),
+      body: FutureBuilder(
+        future: _fetchHebrewDate(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Text(
+              'Error: ${snapshot.error}',
+              style: TextStyle(color: Colors.red),
+            );
+          } else {
+            final items = snapshot.data as List<Map<String, dynamic>>;
+            return ListView.builder(
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                final item = items[index];
+                final translatedTitle = item['title'];
+                final date = item['date'];
+
+                return Card(
+                  elevation: 3,
+                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  child: ListTile(
+                    leading: Icon(Icons.event),
+                    title: Text(
+                      translatedTitle,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text(
+                      date,
+                      style:  const TextStyle(fontSize: 14),
+                    ),
+                  ),
+                );
+              },
+            );
+          }
+        },
+      ),
     );
   }
 }
