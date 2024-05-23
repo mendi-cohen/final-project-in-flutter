@@ -9,6 +9,8 @@ import '../Services/AllTugether.dart';
 import 'package:localstorage/localstorage.dart';
 import './BottomNavigation.dart';
 import '../Services/env.dart';
+import './charidy.dart';
+import './CharidyTable.dart';
 
 class MyMainPage extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -25,8 +27,6 @@ class _MyMainPageState extends State<MyMainPage> {
     super.initState();
     _fetchPoolData();
     _fetchIncomeData();
-   
-    
   }
 
   Future<void> _fetchPoolData() async {
@@ -88,9 +88,16 @@ class _MyMainPageState extends State<MyMainPage> {
                     Navigator.push(
                       context,
                       PageRouteBuilder(
-                        pageBuilder: (_, __, ___) => IncomeEntryWidget(
+                        pageBuilder: (_, __, ___) => BottomNavigationDemo(
                           userData: widget.userData,
-                          onSuccess: _fetchIncomeData,
+                          one: IncomeEntryWidget(
+                            userData: widget.userData,
+                            onSuccess: _fetchIncomeData,
+                          ),
+                          two: IncomeEntryWidget(
+                            userData: widget.userData,
+                            onSuccess: _fetchIncomeData,
+                          ),
                         ),
                         transitionsBuilder: (_, animation, __, child) {
                           return SlideTransition(
@@ -112,9 +119,16 @@ class _MyMainPageState extends State<MyMainPage> {
                     Navigator.push(
                       context,
                       PageRouteBuilder(
-                        pageBuilder: (_, __, ___) => withdrawalWidget(
+                        pageBuilder: (_, __, ___) => BottomNavigationDemo(
                           userData: widget.userData,
-                          onSuccess: _fetchPoolData,
+                          one: withdrawalWidget(
+                            userData: widget.userData,
+                            onSuccess: _fetchPoolData,
+                          ),
+                          two: withdrawalWidget(
+                            userData: widget.userData,
+                            onSuccess: _fetchPoolData,
+                          ),
                         ),
                         transitionsBuilder: (_, animation, __, child) {
                           return SlideTransition(
@@ -140,6 +154,9 @@ class _MyMainPageState extends State<MyMainPage> {
                   PageRouteBuilder(
                     pageBuilder: (_, __, ___) => BottomNavigationDemo(
                       userData: widget.userData,
+                      one: CharidyWidget(userData: widget.userData),
+                      two: CharidyTableWidget(userData: widget.userData),
+                      three: CharidyTableWidget(userData: widget.userData),
                     ),
                     transitionsBuilder: (_, animation, __, child) {
                       return SlideTransition(
@@ -147,7 +164,6 @@ class _MyMainPageState extends State<MyMainPage> {
                           begin: const Offset(1.0, 1.0),
                           end: Offset.zero,
                         ).animate(animation),
-                        
                         child: child,
                       );
                     },
