@@ -65,7 +65,7 @@ class MonthProvider {
     List<String> months = [];
 
     for (int i = now.month; i <= 12; i++) {
-      String month = DateFormat.MMMM().format(DateTime(now.year, i));
+    String month = DateFormat.MMMM().format(DateTime(now.year, i, 1));
       months.add(month);
     }
 

@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously, unnecessary_cast, prefer_final_fields
 
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -464,7 +465,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      'תאריך התחלת התרומה  : $formattedDate',
+                                      'תאריך התחלה : $formattedDate',
                                       style: const TextStyle(
                                         fontSize: 20,
                                         fontStyle: FontStyle.italic,
@@ -497,7 +498,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => HebrewDateWidget()),
+                            builder: (context) => HebrewDateWidget(userData: widget.userData)),
                       );
                     },
                     child: const Text(' לתאריכים מיוחדים החודש: '),

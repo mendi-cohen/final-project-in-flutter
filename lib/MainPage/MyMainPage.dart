@@ -156,7 +156,7 @@ class _MyMainPageState extends State<MyMainPage> {
                     pageBuilder: (_, __, ___) => BottomNavigationDemo(
                       userData: widget.userData,
                       one: CharidyWidget(userData: widget.userData),
-                      two:HebrewDateWidget(),
+                      two:HebrewDateWidget(userData: widget.userData,),
                       three: CharidyTableWidget(userData: widget.userData),
                     ),
                     transitionsBuilder: (_, animation, __, child) {
@@ -174,6 +174,7 @@ class _MyMainPageState extends State<MyMainPage> {
             ),
             const SizedBox(),
             const SizedBox(),
+            
             Align(
               alignment: Alignment.bottomCenter,
               child: Card(
