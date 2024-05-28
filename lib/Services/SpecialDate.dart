@@ -8,17 +8,16 @@ import '../MainPage/BottomNavigation.dart';
 class HebrewDateWidget extends StatefulWidget {
   final Map<String, dynamic> userData;
   const HebrewDateWidget({Key? key, required this.userData}) : super(key: key);
-  
+
   @override
   _HebrewDateWidgetState createState() => _HebrewDateWidgetState();
 }
 
 class _HebrewDateWidgetState extends State<HebrewDateWidget> {
-
   @override
   void initState() {
     super.initState();
-   _fetchHebrewDate();
+    _fetchHebrewDate();
   }
 
   Future<List<Map<String, dynamic>>> _fetchHebrewDate() async {
@@ -83,7 +82,8 @@ class _HebrewDateWidgetState extends State<HebrewDateWidget> {
 
                 return Card(
                   elevation: 3,
-                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   color: isPastDate ? Colors.red[100] : Colors.green[50],
                   child: ListTile(
                     leading: const Icon(Icons.event),
@@ -114,9 +114,12 @@ class _HebrewDateWidgetState extends State<HebrewDateWidget> {
                                 return AlertDialog(
                                   title: const Text('עבר זמנו בטל קורבנו'),
                                   content: const Text(
-                                      'התאריך הזה כבר עבר ולא ניתן לתרום בו כמובן אבל שתמיד אפשר ורצוי לקיים מצוות הצדקה בכל זמן ומקום !.'),
+                                      'התאריך הזה כבר עבר ולא ניתן לתרום בו... כמובן אבל שתמיד אפשר ורצוי לקיים מצוות הצדקה בכל זמן ומקום !',
+                                        style: TextStyle(
+                                      fontSize:
+                                          18, // קביעת גודל גופן גדול יותר כאן
+                                    ),),
                                   actions: <Widget>[
-                                 
                                     TextButton(
                                       onPressed: () {
                                         Navigator.of(context).pop();
@@ -134,9 +137,15 @@ class _HebrewDateWidgetState extends State<HebrewDateWidget> {
                               builder: (BuildContext context) {
                                 final selectedDate = item['title'];
                                 return AlertDialog(
-                                  title: Text('$selectedDate בחירה טובה ומעולה '),
+                                  title:
+                                      Text('$selectedDate בחירה טובה ומעולה '),
                                   content: const Text(
-                                      ' קדימה רוץ לקיים מצוות אלוקיך מתוך שמחה ותקבל כפליים ויותר בחזרה !! '),
+                                    ' קדימה רוץ לקיים מצוות אלוקיך מתוך שמחה ותקבל כפליים ויותר בחזרה !! ',
+                                    style: TextStyle(
+                                      fontSize:
+                                          18, // קביעת גודל גופן גדול יותר כאן
+                                    ),
+                                  ),
                                   actions: <Widget>[
                                     IconButton(
                                       onPressed: () {
@@ -149,11 +158,15 @@ class _HebrewDateWidgetState extends State<HebrewDateWidget> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => BottomNavigationDemo(
+                                            builder: (context) =>
+                                                BottomNavigationDemo(
                                               userData: widget.userData,
-                                              one: CharidyWidget(userData: widget.userData),
-                                              two: HebrewDateWidget(userData: widget.userData),
-                                              three: CharidyTableWidget(userData: widget.userData),
+                                              one: CharidyWidget(
+                                                  userData: widget.userData),
+                                              two: HebrewDateWidget(
+                                                  userData: widget.userData),
+                                              three: CharidyTableWidget(
+                                                  userData: widget.userData),
                                             ),
                                           ),
                                         );

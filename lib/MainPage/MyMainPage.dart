@@ -1,3 +1,4 @@
+// ignore: file_names
 import 'dart:async';
 import 'package:flutter/material.dart';
 import "../Services/MainCards.dart";
@@ -11,7 +12,7 @@ import './BottomNavigation.dart';
 import '../Services/env.dart';
 import './charidy.dart';
 import './CharidyTable.dart';
-import '../Services/SpecialDate.dart';
+import '../Services/SerchWidget.dart';
 
 class MyMainPage extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -75,10 +76,10 @@ class _MyMainPageState extends State<MyMainPage> {
             fit: BoxFit.cover,
           ),
         ),
-        child: Center(child:  GridView.count(
+        child: Center(
+            child: GridView.count(
           crossAxisCount: 1,
           childAspectRatio: 3,
-        
           children: [
             Row(
               children: [
@@ -90,16 +91,18 @@ class _MyMainPageState extends State<MyMainPage> {
                       context,
                       PageRouteBuilder(
                         pageBuilder: (_, __, ___) => BottomNavigationDemo(
-                          userData: widget.userData,
-                          one: IncomeEntryWidget(
                             userData: widget.userData,
-                            onSuccess: _fetchIncomeData,
-                          ),
-                          two: IncomeEntryWidget(
-                            userData: widget.userData,
-                            onSuccess: _fetchIncomeData,
-                          ),
-                        ),
+                            one: IncomeEntryWidget(
+                              userData: widget.userData,
+                              onSuccess: _fetchIncomeData,
+                            ),
+                              two: DataSearchWidget(
+                                apiUrl:
+                                    '$PATH/income/getAllincomesByuserid/${widget.userData['user']['id']}',
+                                    type:'AllincomsFdb',sum: 'income_value', resion: 'source',title: "תאריך ההכנסה",
+                                    img: 'assets/images/incomeImage.jpeg',wigetTitle: 'כל ההכנסות מתחילת' ,
+                                    color: Colors.blue, text: 'סה"כ הכנסת השנה',DelPath: 'income',),),
+                                    
                         transitionsBuilder: (_, animation, __, child) {
                           return SlideTransition(
                             position: Tween<Offset>(
@@ -126,10 +129,11 @@ class _MyMainPageState extends State<MyMainPage> {
                             userData: widget.userData,
                             onSuccess: _fetchPoolData,
                           ),
-                          two: withdrawalWidget(
-                            userData: widget.userData,
-                            onSuccess: _fetchPoolData,
-                          ),
+                          two:  DataSearchWidget(
+                                apiUrl:
+                                    '$PATH/pool/getAllpoolByuserid/${widget.userData['user']['id']}',type:'AllPoolFdb',
+                                    sum: 'pool_value', resion: 'resion',title: 'תאריך המשיכה',img: 'assets/images/poolImage.jpeg', 
+                                    wigetTitle: 'כל ההוצאות מתחילת' ,color:Colors.red ,text: 'סה"כ הוצאת השנה',DelPath: 'pool',),
                         ),
                         transitionsBuilder: (_, animation, __, child) {
                           return SlideTransition(
@@ -156,7 +160,12 @@ class _MyMainPageState extends State<MyMainPage> {
                     pageBuilder: (_, __, ___) => BottomNavigationDemo(
                       userData: widget.userData,
                       one: CharidyWidget(userData: widget.userData),
-                      two:HebrewDateWidget(userData: widget.userData,),
+                      two:  DataSearchWidget(
+                                apiUrl:
+                                    '$PATH/charidy/getAllCharidyByuserid/${widget.userData['user']['id']}',type:'AllCharidy',
+                                    sum: 'charidy_value',resion: 'resion',title: 'תאריך ביצוע התרומה',img: 'assets/images/CharidyImage.jpeg',
+                                    wigetTitle: 'כל התרומות מתחילת',color: const Color.fromARGB(255, 94, 217, 98),
+                                     text: 'סה"כ תרמת השנה',DelPath: 'charidy',),
                       three: CharidyTableWidget(userData: widget.userData),
                     ),
                     transitionsBuilder: (_, animation, __, child) {
@@ -174,7 +183,6 @@ class _MyMainPageState extends State<MyMainPage> {
             ),
             const SizedBox(),
             const SizedBox(),
-            
             Align(
               alignment: Alignment.bottomCenter,
               child: Card(

@@ -7,11 +7,14 @@ import '../Services/Dialog.dart';
 import '../Services/deleted.dart';
 import '../Services/Token.dart';
 import '../Services/env.dart';
+import '../Services/SerchWidget.dart';
+
 
 class withdrawalWidget extends StatefulWidget {
   final Map<String, dynamic> userData;
   final Function() onSuccess;
-  const withdrawalWidget({super.key, required this.userData, required this.onSuccess}) ;
+  const withdrawalWidget(
+      {super.key, required this.userData, required this.onSuccess});
 
   @override
   withdrawalWidgetState createState() => withdrawalWidgetState();
@@ -41,7 +44,8 @@ class withdrawalWidgetState extends State<withdrawalWidget> {
           labelText: labelText,
           hintText: hintText,
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
           // צבע טקסט
           labelStyle: const TextStyle(
             color: Colors.black87,
@@ -58,9 +62,8 @@ class withdrawalWidgetState extends State<withdrawalWidget> {
   void initState() {
     super.initState();
     TokenManager.scheduleTokenDeletion();
-     _fetchData();
+    _fetchData();
   }
- 
 
   //// שליחת משיכה למסד הנתונים
 
@@ -176,24 +179,71 @@ class withdrawalWidgetState extends State<withdrawalWidget> {
                   ),
                   const SizedBox(height: 10),
                   Container(
-                    decoration: BoxDecoration(color: Colors.white.withOpacity(0.9)),
+                    decoration:
+                        BoxDecoration(color: Colors.white.withOpacity(0.9)),
                     child: Row(
                       children: [
-                        Checkbox(
-                          value: _isMonthly,
-                          onChanged: (value) {
-                            setState(() {
-                              _isMonthly = value ?? false;
-                            });
-                          },
-                          activeColor: const Color.fromARGB(255, 40, 45, 203),
-                        ),
-                        const Text(
-                          ' הוצאה חודשית קבועה ?',
-                          style: TextStyle(
-                            color: Colors.black87,
-                            fontSize: 15,
-                          ),
+                         Row(
+                          children: [
+                            Checkbox(
+                              value: _isMonthly,
+                              onChanged: (value) {
+                                setState(() {
+                                  _isMonthly = value ?? false;
+                                });
+                              },
+                              activeColor:
+                                  Color.fromARGB(255, 217, 45, 51),
+                            ),
+                            const Text(
+                              ' הוצאה חודשית קבועה ?',
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 15,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            TextButton.icon(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DataSearchWidget(
+                                apiUrl:
+                                    '$PATH/pool/getAllConstpoolsByuserid/${widget.userData['user']['id']}',
+                                    type:'AllConstpoolsFdb',sum: 'pool_value', resion: 'resion',title: "תאריך ההוצאה הראשונה",
+                                    img: 'assets/images/poolImage.jpeg',wigetTitle: 'כל ההוצאות מתחילת' ,
+                                    color: Colors.red, text: 'סה"כ ההוצאות הקבועות השנה ',DelPath: 'pool',),
+                                  ),
+                                );
+                              },
+                              style: ButtonStyle(
+                                overlayColor: MaterialStateColor.resolveWith(
+                                  (states) => Colors.transparent,
+                                ),
+                                foregroundColor: MaterialStateColor.resolveWith(
+                                  (states) => Colors.black87,
+                                ),
+                                backgroundColor: MaterialStateColor.resolveWith(
+                                  (states) => Colors.red,
+                                ),
+                                padding: MaterialStateProperty.all<EdgeInsets>(
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                                ),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              icon: const Icon(Icons.arrow_forward),
+                              label: const Text(
+                                ' כל ההוצאות הקבועות ',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -218,8 +268,9 @@ class withdrawalWidgetState extends State<withdrawalWidget> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  All.buildTotalIncome(dataList, 'סך ההוצאות הכולל', 'pool_value', Colors.red),
-                   const SizedBox(
+                  All.buildTotalIncome(
+                      dataList, 'סך ההוצאות הכולל', 'pool_value', Colors.red),
+                  const SizedBox(
                     height: 10,
                   ),
                   Container(
@@ -235,60 +286,97 @@ class withdrawalWidgetState extends State<withdrawalWidget> {
                       ),
                     ),
                   ),
-
                   SizedBox(
-                    height: 550,
+                    height: MediaQuery.of(context).size.height,
                     child: ListView.builder(
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
-                      itemCount: dataList.length,
+                      itemCount:
+                          dataList.length + 1, // הוספת פריט נוסף לסוף הרשימה
                       itemBuilder: (BuildContext context, int index) {
-                        int reversedIndex = dataList.length - 1 - index;
-                        String formattedDate = DateFormat('dd/MM/yyyy')
-                            .format(DateTime.parse(dataList[reversedIndex]['createdAt']));
-                        return Card(
-                          elevation: 10,
-                          margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: ListTile(
-                            contentPadding: const EdgeInsets.all(28),
-                            tileColor: Colors.white.withOpacity(0.1),
-                            textColor: Colors.redAccent,
-                            title: Text(
-                              'סכום ההוצאה: ${dataList[reversedIndex]['pool_value']} ש"ח',
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                        if (index == dataList.length) {
+                          // הכרטיס הקבוע בסוף הרשימה
+                          return Padding(
+                            padding: const EdgeInsets.all(300.0),
+                            child: Card(
+                              elevation: 3,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const SizedBox(
+                                height: 300,
+                              ),
                             ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'סיבה: ${dataList[reversedIndex]['resion']}',
-                                  style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 18),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'תאריך העסקה : $formattedDate',
-                                  style: const TextStyle(fontSize: 18, fontStyle: FontStyle.italic),
-                                ),
-                                      const SizedBox(height: 4),
-                                    Text(
-                                      ' סטטוס פעולה : ${dataList[reversedIndex]['monstli']}',
-                                      style: const TextStyle(
+                          );
+                        } else {
+                          // יתר הכרטיסים מהרשימה
+                          int reversedIndex = dataList.length - 1 - index;
+                          String formattedSum = NumberFormat('#,###').format(int.parse(dataList[reversedIndex]['pool_value']));
+
+                          String formattedDate = DateFormat('dd/MM/yyyy')
+                              .format(DateTime.parse(
+                                  dataList[reversedIndex]['createdAt']));
+                          return Card(
+                            elevation: 3,
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            color:
+                                dataList[reversedIndex]['monstli'] != 'חד-פעמית'
+                                    ? const Color.fromARGB(255, 243, 241, 232)
+                                    : Colors.white,
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.all(28),
+                              tileColor: Colors.white.withOpacity(0.1),
+                              textColor: Colors.redAccent,
+                              title: Text(
+                                'סכום ההוצאה: $formattedSum ש"ח',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'סיבה: ${dataList[reversedIndex]['resion']}',
+                                    style: const TextStyle(
+                                        fontStyle: FontStyle.italic,
+                                        fontSize: 18),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'תאריך העסקה : $formattedDate',
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontStyle: FontStyle.italic),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  if (dataList[reversedIndex]['monstli'] !=
+                                      'חד-פעמית') ...[
+                                    const SizedBox(height: 2),
+                                    const Text(
+                                      '* הוצאה קבועה',
+                                      style: TextStyle(
                                         fontStyle: FontStyle.italic,
                                         fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color.fromARGB(255, 39, 218, 11),
                                       ),
                                     ),
-                              ],
+                                  ],
+                                ],
+                              ),
+                              trailing: DelWidget(
+                                ObjectId:
+                                    dataList[reversedIndex]['id'].toString(),
+                                path: 'pool',
+                                DEL: _fetchData,
+                              ),
                             ),
-                            trailing: DelWidget(
-                              ObjectId: dataList[reversedIndex]['id'].toString(),
-                              path: 'pool',
-                              DEL: _fetchData,
-                            ),
-                          ),
-                        );
+                          );
+                        }
                       },
                     ),
                   ),

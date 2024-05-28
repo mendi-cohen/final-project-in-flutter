@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously, unnecessary_cast, prefer_final_fields
 
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -401,13 +400,18 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
                   ),
-                 
                   const SizedBox(
                     height: 10,
                   ),
-                  All.buildTotalIncome(dataList, 'סך התרומות הכולל',
-                      'charidy_value',  const Color.fromARGB(255, 27, 222, 73),),
-              const SizedBox(height: 10,),
+                  All.buildTotalIncome(
+                    dataList,
+                    'סך התרומות הכולל',
+                    'charidy_value',
+                    const Color.fromARGB(255, 27, 222, 73),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   Container(
                     color: Colors.white.withOpacity(0.6),
                     child: const Center(
@@ -417,7 +421,6 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                           fontSize: 25,
                           fontWeight: FontWeight.bold,
                           color: Color.fromARGB(255, 18, 11, 11),
-                          
                         ),
                       ),
                     ),
@@ -431,74 +434,92 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                         children: dataList.map((item) {
                           String formattedDate = DateFormat('dd/MM/yyyy')
                               .format(DateTime.parse(item['createdAt']));
+                          String formattedSum = NumberFormat('#,###').format(int.parse(item['charidy_value']));
+
 
                           return Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 280,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 20),
-                            child: Card(
-                              elevation: 2,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: ListTile(
-                                contentPadding: const EdgeInsets.all(16),
-                                tileColor: Colors.white.withOpacity(0.1),
-                                textColor: Colors.lightGreen,
-                                title: Text(
-                                  'סכום התרומה: ${item['charidy_value']} ש"ח',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 26,
+                              width: MediaQuery.of(context).size.width,
+                              height: 270,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 20),
+                              child: Card(
+                                elevation: 2,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                // שינוי צבע הכרטיס
+                                color: item['type'] == 'חד פעמי'
+                                    ? Colors.white
+                                    : const Color.fromARGB(255, 244, 241, 225),
+                                child: ListTile(
+                                  contentPadding: const EdgeInsets.all(16),
+                                  tileColor: Colors.white.withOpacity(0.1),
+                                  textColor: Colors.lightGreen,
+                                  title: Text(
+                                    'סכום התרומה: $formattedSum ש"ח',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 24,
+                                    ),
+                                  ),
+                                  subtitle: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          ' יעד : ${item['resion']}',
+                                          style: const TextStyle(
+                                            fontStyle: FontStyle.italic,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          'תאריך התחלה : $formattedDate',
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontStyle: FontStyle.italic,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          ' תאריך סיום : ${item['type']}',
+                                          style: const TextStyle(
+                                            fontStyle: FontStyle.italic,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                        if (item['type'] != 'חד פעמי') ...[
+                                          const SizedBox(height: 10),
+                                          const Text(
+                                            '* תרומה חוזרת',
+                                            style: TextStyle(
+                                              fontStyle: FontStyle.italic,
+                                              fontSize: 18,
+                                              color: Colors.red,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ]),
+                                  trailing: DelWidget(
+                                    ObjectId: item['id'].toString(),
+                                    path: 'charidy',
+                                    DEL: _fetchData,
                                   ),
                                 ),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      ' יעד : ${item['resion']}',
-                                      style: const TextStyle(
-                                        fontStyle: FontStyle.italic,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      'תאריך התחלה : $formattedDate',
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        fontStyle: FontStyle.italic,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      ' תאריך סיום : ${item['type']}',
-                                      style: const TextStyle(
-                                        fontStyle: FontStyle.italic,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                trailing: DelWidget(
-                                  ObjectId: item['id'].toString(),
-                                  path: 'charidy',
-                                  DEL: _fetchData,
-                                ),
-                              ),
-                            ),
-                          );
+                              ));
                         }).toList(),
                       ),
                     ),
                   ),
-                      ElevatedButton(
+                  ElevatedButton(
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => HebrewDateWidget(userData: widget.userData)),
+                            builder: (context) =>
+                                HebrewDateWidget(userData: widget.userData)),
                       );
                     },
                     child: const Text(' לתאריכים מיוחדים החודש: '),

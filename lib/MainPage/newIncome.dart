@@ -9,11 +9,13 @@ import '../Services/Dialog.dart';
 import '../Services/deleted.dart';
 import '../Services/Token.dart';
 import '../Services/env.dart';
+import '../Services/SerchWidget.dart';
 
 class IncomeEntryWidget extends StatefulWidget {
   final Map<String, dynamic> userData;
   final Function() onSuccess;
-  const IncomeEntryWidget({super.key, required this.userData, required this.onSuccess});
+  const IncomeEntryWidget(
+      {super.key, required this.userData, required this.onSuccess});
 
   @override
   _IncomeEntryWidgetState createState() => _IncomeEntryWidgetState();
@@ -43,7 +45,8 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
           labelText: labelText,
           hintText: hintText,
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
           labelStyle: const TextStyle(
             color: Colors.black87,
           ),
@@ -105,7 +108,8 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
     );
 
     if (response.statusCode == 200) {
-      await DialogService.showMessageDialog(context, 'הצלחה', 'ההכנסה התווספה בהצלחה!', Colors.green);
+      await DialogService.showMessageDialog(
+          context, 'הצלחה', 'ההכנסה התווספה בהצלחה!', Colors.green);
       _amountController.clear();
       _sourceController.clear();
       setState(() {
@@ -114,7 +118,8 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
         widget.onSuccess();
       });
     } else {
-      await DialogService.showMessageDialog(context, 'שגיאה', 'אירעה שגיאה בתהליך ההוספה של ההכנסה.', Colors.red);
+      await DialogService.showMessageDialog(
+          context, 'שגיאה', 'אירעה שגיאה בתהליך ההוספה של ההכנסה.', Colors.red);
     }
   }
 
@@ -124,7 +129,8 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['incomsFdb'];
       setState(() {
-        dataList = List<Map<String, dynamic>>.from(data.map((entry) => entry as Map<String, dynamic>));
+        dataList = List<Map<String, dynamic>>.from(
+            data.map((entry) => entry as Map<String, dynamic>));
       });
     }
   }
@@ -165,24 +171,71 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                   ),
                   const SizedBox(height: 10),
                   Container(
-                    decoration: BoxDecoration(color: Colors.white.withOpacity(0.9)),
+                    decoration:
+                        BoxDecoration(color: Colors.white.withOpacity(0.9)),
                     child: Row(
                       children: [
-                        Checkbox(
-                          value: _isMonthly,
-                          onChanged: (value) {
-                            setState(() {
-                              _isMonthly = value ?? false;
-                            });
-                          },
-                          activeColor: const Color.fromARGB(255, 40, 45, 203),
-                        ),
-                        const Text(
-                          ' הכנסה חודשית קבועה ?',
-                          style: TextStyle(
-                            color: Colors.black87,
-                            fontSize: 15,
-                          ),
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: _isMonthly,
+                              onChanged: (value) {
+                                setState(() {
+                                  _isMonthly = value ?? false;
+                                });
+                              },
+                              activeColor:
+                                  const Color.fromARGB(255, 40, 45, 203),
+                            ),
+                            const Text(
+                              ' הכנסה חודשית קבועה ?',
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 15,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            TextButton.icon(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DataSearchWidget(
+                                apiUrl:
+                                    '$PATH/income/getAllConstincomesByuserid/${widget.userData['user']['id']}',
+                                    type:'AllConstincomsFdb',sum: 'income_value', resion: 'source',title: "תאריך ההכנסה הראשונה",
+                                    img: 'assets/images/incomeImage.jpeg',wigetTitle: 'כל ההכנסות הקבועות מתחילת' ,
+                                    color: Colors.blue, text: 'סה"כ ההכנסות הקבועות השנה ',DelPath: 'income',),
+                                  ),
+                                );
+                              },
+                              style: ButtonStyle(
+                                overlayColor: MaterialStateColor.resolveWith(
+                                  (states) => Colors.transparent,
+                                ),
+                                foregroundColor: MaterialStateColor.resolveWith(
+                                  (states) => Colors.black87,
+                                ),
+                                backgroundColor: MaterialStateColor.resolveWith(
+                                  (states) => Colors.blue,
+                                ),
+                                padding: MaterialStateProperty.all<EdgeInsets>(
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                                ),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              icon: const Icon(Icons.arrow_forward),
+                              label: const Text(
+                                ' כל ההכנסות הקבועות ',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -206,9 +259,12 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ),
-                   const SizedBox(height: 20,),
-                    All.buildTotalIncome(dataList, 'סך ההכנסות הכולל', 'income_value', Colors.blue),
-                     const SizedBox(
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  All.buildTotalIncome(dataList, 'סך ההכנסות הכולל',
+                      'income_value', Colors.blue),
+                  const SizedBox(
                     height: 10,
                   ),
                   Container(
@@ -225,61 +281,98 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                     ),
                   ),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height ,
+                    height: MediaQuery.of(context).size.height,
                     child: ListView.builder(
                       scrollDirection: Axis.vertical,
                       physics: const AlwaysScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: dataList.length,
+                      itemCount: dataList.length + 1,
                       itemBuilder: (BuildContext context, int index) {
-                        int reversedIndex = dataList.length - 1 - index;
-                        String formattedDate = DateFormat('dd/MM/yyyy').format(DateTime.parse(dataList[reversedIndex]['createdAt']));
-                      
-
-                        return Card(
-                          elevation: 4,
-                          margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: ListTile(
-                            contentPadding: const EdgeInsets.all(28),
-                            tileColor: Colors.white.withOpacity(0.1),
-                            textColor: const Color.fromARGB(255, 75, 27, 222),
-                            title: Text(
-                              'סכום ההכנסה: ${dataList[reversedIndex]['income_value']} ש"ח',
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                        if (index == dataList.length) {
+                          return Padding(
+                            padding: const EdgeInsets.all(300.0),
+                            child: Card(
+                              elevation: 3,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const SizedBox(
+                                height: 300,
+                              ),
                             ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'מקור: ${dataList[reversedIndex]['source']}',
-                                  style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 18),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'תאריך  ההכנסה : $formattedDate',
-                                  style: const TextStyle(fontSize: 18, fontStyle: FontStyle.italic),
-                                ),
-                                 const SizedBox(height: 4),
-                                    Text(
-                                      ' סטטוס פעולה : ${dataList[reversedIndex]['monstli']}',
-                                      style: const  TextStyle(
+                          );
+                        } else {
+                          int reversedIndex = dataList.length - 1 - index;
+                          String formattedSum = NumberFormat('#,###').format(
+                              int.parse(
+                                  dataList[reversedIndex]['income_value']));
+                          String formattedDate = DateFormat('dd/MM/yyyy')
+                              .format(DateTime.parse(
+                                  dataList[reversedIndex]['createdAt']));
+
+                          return Card(
+                            elevation: 4,
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 6, horizontal: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            color:
+                                dataList[reversedIndex]['monstli'] != 'חד-פעמית'
+                                    ? const Color.fromARGB(255, 243, 241, 232)
+                                    : Colors.white,
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.all(28),
+                              tileColor: Colors.white.withOpacity(0.1),
+                              textColor: const Color.fromARGB(255, 75, 27, 222),
+                              title: Text(
+                                'סכום ההכנסה: $formattedSum ש"ח',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'מקור: ${dataList[reversedIndex]['source']}',
+                                    style: const TextStyle(
+                                        fontStyle: FontStyle.italic,
+                                        fontSize: 18),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'תאריך ההכנסה : $formattedDate',
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontStyle: FontStyle.italic),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  if (dataList[reversedIndex]['monstli'] !=
+                                      'חד-פעמית') ...[
+                                    const SizedBox(height: 2),
+                                    const Text(
+                                      '* הכנסה קבועה',
+                                      style: TextStyle(
                                         fontStyle: FontStyle.italic,
                                         fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color.fromARGB(255, 39, 218, 11),
                                       ),
                                     ),
-                              ],
+                                  ],
+                                ],
+                              ),
+                              trailing: DelWidget(
+                                ObjectId: dataList[reversedIndex]['id'].toString(),
+                                path: 'income',
+                                DEL: _fetchData,
+                              ),
                             ),
-                            trailing: DelWidget(ObjectId: dataList[index]['id'].toString(), path: 'income' , DEL: _fetchData, ),
-                          ),
-                        );
+                          );
+                        }
                       },
                     ),
-                  ),
-                
-                
+                  )
                 ],
               ),
             ),
