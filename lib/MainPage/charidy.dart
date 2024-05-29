@@ -11,10 +11,14 @@ import '../Services/MonthPickerWidget.dart';
 import '../Services/Token.dart';
 import '../Services/env.dart';
 import '../Services/SpecialDate.dart';
+import '../Services/SerchWidget.dart';
+
+
 
 class CharidyWidget extends StatefulWidget {
   final Map<String, dynamic> userData;
-  const CharidyWidget({super.key, required this.userData});
+  final Function()  onSuccess;
+  const CharidyWidget({super.key, required this.userData, required this.onSuccess});
   @override
   _CharidyWidgetState createState() => _CharidyWidgetState();
 }
@@ -70,7 +74,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        String? selectedMonth = DateFormat('MMMM MM').format(DateTime.now());
+        String? selectedMonth = MonthProvider.getMonths()[1];
         return AlertDialog(
           title: const Text(' עד איזה חודש התרומה ?  (כולל)'),
           content: MonthPickerWidget(
@@ -206,6 +210,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
       setState(() {
         _selectedOption = 'חד פעמי';
         _fetchData();
+        widget.onSuccess();
       });
     } else {
       await DialogService.showMessageDialog(
@@ -302,6 +307,48 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                             fontSize: 15,
                           ),
                         ),
+                         const SizedBox(
+                              width: 10,
+                            ),
+                            TextButton.icon(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DataSearchWidget(
+                                apiUrl:
+                                    '$PATH/charidy/getAllConstCharidyByuserid/${widget.userData['user']['id']}',
+                                    type:'AllConstCharidy',sum: 'charidy_value', resion: 'resion',title: "תאריך התרומה הראשונה",
+                                    img: 'assets/images/CharidyImage.jpeg',wigetTitle: 'כל התרומות הקבועות מתחילת' ,
+                                    color: const Color.fromARGB(255, 40, 232, 43), text: 'סה"כ התרומות הקבועות השנה ',
+                                    DelPath: 'charidy',del: true,subject: true,),
+                                  ),
+                                );
+                              },
+                              style: ButtonStyle(
+                                overlayColor: MaterialStateColor.resolveWith(
+                                  (states) => Colors.transparent,
+                                ),
+                                foregroundColor: MaterialStateColor.resolveWith(
+                                  (states) => Colors.black87,
+                                ),
+                                backgroundColor: MaterialStateColor.resolveWith(
+                                  (states) => const Color.fromARGB(255, 33, 243, 37),
+                                ),
+                                padding: MaterialStateProperty.all<EdgeInsets>(
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                                ),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              icon: const Icon(Icons.arrow_forward),
+                              label: const Text(
+                                ' כל התרומות הקבועות ',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
                       ],
                     ),
                   ),
@@ -506,6 +553,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                                     ObjectId: item['id'].toString(),
                                     path: 'charidy',
                                     DEL: _fetchData,
+                                    onSuccess: widget.onSuccess,
                                   ),
                                 ),
                               ));

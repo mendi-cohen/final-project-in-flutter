@@ -193,7 +193,7 @@ class withdrawalWidgetState extends State<withdrawalWidget> {
                                 });
                               },
                               activeColor:
-                                  Color.fromARGB(255, 217, 45, 51),
+                                 const Color.fromARGB(255, 217, 45, 51),
                             ),
                             const Text(
                               ' הוצאה חודשית קבועה ?',
@@ -215,7 +215,7 @@ class withdrawalWidgetState extends State<withdrawalWidget> {
                                     '$PATH/pool/getAllConstpoolsByuserid/${widget.userData['user']['id']}',
                                     type:'AllConstpoolsFdb',sum: 'pool_value', resion: 'resion',title: "תאריך ההוצאה הראשונה",
                                     img: 'assets/images/poolImage.jpeg',wigetTitle: 'כל ההוצאות מתחילת' ,
-                                    color: Colors.red, text: 'סה"כ ההוצאות הקבועות השנה ',DelPath: 'pool',),
+                                    color: Colors.red, text: 'סה"כ ההוצאות הקבועות השנה ',DelPath: 'pool',del: true,),
                                   ),
                                 );
                               },
@@ -373,6 +373,7 @@ class withdrawalWidgetState extends State<withdrawalWidget> {
                                     dataList[reversedIndex]['id'].toString(),
                                 path: 'pool',
                                 DEL: _fetchData,
+                                onSuccess: widget.onSuccess,
                               ),
                             ),
                           );

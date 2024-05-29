@@ -189,7 +189,7 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
                 height: 5,
               ),
               Center(
-                  child: All.buildTotalIncome(
+                  child: All.buildTotalMaaser(
                       dataListIncomeModified,
                       'סך המעשרות שנותר להפריש',
                       'income_value',

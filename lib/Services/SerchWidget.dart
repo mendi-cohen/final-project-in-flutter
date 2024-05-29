@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import './Sum.dart';
-import'./deleted.dart';
+import './deleted.dart';
 
 class DataSearchWidget extends StatefulWidget {
   final String apiUrl;
@@ -16,20 +16,24 @@ class DataSearchWidget extends StatefulWidget {
   final Color color;
   final String text;
   final String DelPath;
+  final bool del;
+  final bool? subject;
 
-  const DataSearchWidget(
-      {super.key,
-      required this.apiUrl,
-      required this.type,
-      required this.sum,
-      required this.resion,
-      required this.title,
-      required this.img,
-      required this.wigetTitle,
-      required this.color,
-      required this.text,
-      required this.DelPath,
-      });
+  const DataSearchWidget({
+    super.key,
+    required this.apiUrl,
+    required this.type,
+    required this.sum,
+    required this.resion,
+    required this.title,
+    required this.img,
+    required this.wigetTitle,
+    required this.color,
+    required this.text,
+    required this.DelPath,
+    required this.del,
+    this.subject,
+  });
 
   @override
   _DataSearchWidgetState createState() => _DataSearchWidgetState();
@@ -37,7 +41,7 @@ class DataSearchWidget extends StatefulWidget {
 
 class _DataSearchWidgetState extends State<DataSearchWidget> {
   List<dynamic> dataList = [];
-  List<dynamic> filteredDataList = [];
+  Map<String, List<dynamic>> groupedData = {};
   TextEditingController searchController = TextEditingController();
   DateTime? selectedDate;
 
@@ -54,17 +58,31 @@ class _DataSearchWidgetState extends State<DataSearchWidget> {
     if (response.statusCode == 200) {
       setState(() {
         dataList = jsonDecode(response.body)[widget.type];
-        filteredDataList = dataList;
+        _groupDataByMonth(dataList);
       });
     }
   }
 
+  void _groupDataByMonth(List<dynamic> dataList) {
+    groupedData.clear();
+    for (var item in dataList) {
+      String monthYear =
+          DateFormat('MM/yyyy').format(DateTime.parse(item['createdAt']));
+      if (!groupedData.containsKey(monthYear)) {
+        groupedData[monthYear] = [];
+      }
+      groupedData[monthYear]!.add(item);
+    }
+    _filterData();
+  }
+
   void _filterData() {
     String query = searchController.text.toLowerCase();
-    setState(() {
-      filteredDataList = dataList.where((item) {
-        String source = item['source'].toLowerCase();
-        String value = item['income_value'].toString().toLowerCase();
+    Map<String, List<dynamic>> filteredGroupedData = {};
+    groupedData.forEach((monthYear, items) {
+      var filteredItems = items.where((item) {
+        String source = item[widget.resion].toLowerCase();
+        String value = item[widget.sum].toString().toLowerCase();
         String date =
             DateFormat('dd/MM/yyyy').format(DateTime.parse(item['createdAt']));
         bool isDateQuery = RegExp(r'\d{2}/\d{2}/\d{4}').hasMatch(query);
@@ -74,8 +92,16 @@ class _DataSearchWidgetState extends State<DataSearchWidget> {
           return source.contains(query) || value.contains(query);
         }
       }).toList();
+      if (filteredItems.isNotEmpty) {
+        filteredGroupedData[monthYear] = filteredItems;
+      }
+    });
+    setState(() {
+      groupedData = filteredGroupedData;
     });
   }
+
+
 
   @override
   void dispose() {
@@ -93,17 +119,23 @@ class _DataSearchWidgetState extends State<DataSearchWidget> {
     if (pickedDate != null && pickedDate != selectedDate) {
       setState(() {
         selectedDate = pickedDate;
-        filteredDataList = dataList.where((item) {
+        List<dynamic> filteredDataList = dataList.where((item) {
           String date = DateFormat('dd/MM/yyyy')
               .format(DateTime.parse(item['createdAt']));
           return date == DateFormat('dd/MM/yyyy').format(pickedDate);
         }).toList();
+        _groupDataByMonth(filteredDataList);
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    List<String> sortedKeys = groupedData.keys.toList()
+      ..sort((a, b) => DateFormat('MM/yyyy')
+          .parse(b)
+          .compareTo(DateFormat('MM/yyyy').parse(a)));
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -149,12 +181,12 @@ class _DataSearchWidgetState extends State<DataSearchWidget> {
                 ),
               ),
               All.buildTotalIncome(
-                  filteredDataList, widget.text, widget.sum, widget.color),
+                  dataList, widget.text, widget.sum, widget.color),
               const SizedBox(
                 height: 10,
               ),
               Expanded(
-                child: filteredDataList.isEmpty
+                child: groupedData.isEmpty
                     ? const Center(
                         child: Text(
                           'לא נמצאו תוצאות',
@@ -164,54 +196,97 @@ class _DataSearchWidgetState extends State<DataSearchWidget> {
                         ),
                       )
                     : ListView.builder(
-                        itemCount: filteredDataList.length,
+                        itemCount: sortedKeys.length,
                         itemBuilder: (context, index) {
-                          int reversedIndex =
-                              filteredDataList.length - 1 - index;
-                          String formattedSum = NumberFormat('#,###').format(int.parse(filteredDataList[reversedIndex][widget.sum]));
-                          String formattedDate =
-                              DateFormat('dd/MM/yyyy').format(
-                            DateTime.parse(
-                                filteredDataList[reversedIndex]['createdAt']),
-                          );
-                          return Card(
-                            elevation: 3,
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: ListTile(
-                              contentPadding: const EdgeInsets.all(20),
-                              title: Text(
-                                'סכום: $formattedSum ש"ח',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 18),
-                              ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'מקור: ${filteredDataList[reversedIndex][widget.resion]}',
-                                    style: const TextStyle(
-                                        fontStyle: FontStyle.italic,
-                                        fontSize: 16),
+                          String monthYear = sortedKeys[index];
+                          List<dynamic> items = groupedData[monthYear]!;
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                color: widget.color,
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(child:  Text(
+                                  monthYear,
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
                                   ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    ' ${widget.title}: $formattedDate',
-                                    style: const TextStyle(
-                                        fontSize: 16,
-                                        fontStyle: FontStyle.italic),
+                                )),
+                              ),
+                              ...items.reversed.map((item) {
+                                
+                                String formattedSum = NumberFormat('#,###')
+                                    .format(int.parse(item[widget.sum]));
+                                String formattedDate = DateFormat('dd/MM/yyyy')
+                                    .format(DateTime.parse(item['createdAt']));
+                                return Card(
+                                  elevation: 3,
+                                  margin: const EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
-                                ],
-                              ),
-                               trailing: DelWidget(
-                                ObjectId: dataList[reversedIndex]['id'].toString(),
-                                path: widget.DelPath,
-                                DEL: _fetchData,
-                              ),
-                            ),
+                                  child: ListTile(
+                                    contentPadding: const EdgeInsets.all(20),
+                                    title: Text(
+                                      'סכום: $formattedSum ש"ח',
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20),
+                                    ),
+                                    subtitle: Column(
+                                      crossAxisAlignment: 
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'מקור: ${item[widget.resion]}',
+                                          style: const TextStyle(
+                                              fontStyle: FontStyle.italic,
+                                              fontSize: 18),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          ' ${widget.title}: $formattedDate',
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              fontStyle: FontStyle.italic),
+                                        ),
+                                        const SizedBox(height: 8),
+
+                                        if (widget.subject == true && item['type'] != 'חודשי קבוע' )
+                                          Text(
+                                            ' מועד אחרון לתרומה זו :  ${item['type']}',
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              fontStyle: FontStyle.italic,
+                                            ),
+                                          ),
+                                        if (widget.subject == true && item['type'] == 'חודשי קבוע' )
+                                          const Text(
+                                            'תרומה קבועה ללא הגבלה',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontStyle: FontStyle.italic,
+                                              color: Colors.red
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                    trailing: widget.del
+                                        ? DelWidget(
+                                            ObjectId: item['id'].toString(),
+                                            path: widget.DelPath,
+                                            DEL: _fetchData,
+                                      
+                                          )
+                                        : null,
+                                  ),
+                                );
+                              }).toList(),
+                            ],
                           );
                         },
                       ),

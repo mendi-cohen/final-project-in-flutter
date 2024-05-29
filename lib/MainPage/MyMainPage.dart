@@ -24,6 +24,7 @@ class MyMainPage extends StatefulWidget {
 class _MyMainPageState extends State<MyMainPage> {
   List<dynamic> poolList = [];
   List<dynamic> incomeList = [];
+  List<dynamic> charidyList = [];
   @override
   void initState() {
     super.initState();
@@ -54,6 +55,18 @@ class _MyMainPageState extends State<MyMainPage> {
       final data = jsonDecode(response.body)['incomsFdb'];
       setState(() {
         incomeList = List<Map<String, dynamic>>.from(
+            data.map((entry) => entry as Map<String, dynamic>));
+      });
+    }
+  }
+  Future<void> _fetchCharidyData() async {
+    final response = await http.get(Uri.parse(
+        '$PATH/charidy/getcharidyByuser_id/${widget.userData['user']['id']}'));
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body)['CharidyFdb'];
+      setState(() {
+        charidyList = List<Map<String, dynamic>>.from(
             data.map((entry) => entry as Map<String, dynamic>));
       });
     }
@@ -101,7 +114,7 @@ class _MyMainPageState extends State<MyMainPage> {
                                     '$PATH/income/getAllincomesByuserid/${widget.userData['user']['id']}',
                                     type:'AllincomsFdb',sum: 'income_value', resion: 'source',title: "תאריך ההכנסה",
                                     img: 'assets/images/incomeImage.jpeg',wigetTitle: 'כל ההכנסות מתחילת' ,
-                                    color: Colors.blue, text: 'סה"כ הכנסת השנה',DelPath: 'income',),),
+                                    color: Colors.blue, text: 'סה"כ הכנסת השנה',DelPath: 'income',del: false,),),
                                     
                         transitionsBuilder: (_, animation, __, child) {
                           return SlideTransition(
@@ -133,7 +146,7 @@ class _MyMainPageState extends State<MyMainPage> {
                                 apiUrl:
                                     '$PATH/pool/getAllpoolByuserid/${widget.userData['user']['id']}',type:'AllPoolFdb',
                                     sum: 'pool_value', resion: 'resion',title: 'תאריך המשיכה',img: 'assets/images/poolImage.jpeg', 
-                                    wigetTitle: 'כל ההוצאות מתחילת' ,color:Colors.red ,text: 'סה"כ הוצאת השנה',DelPath: 'pool',),
+                                    wigetTitle: 'כל ההוצאות מתחילת' ,color:Colors.red ,text: 'סה"כ הוצאת השנה',DelPath: 'pool',del: false,),
                         ),
                         transitionsBuilder: (_, animation, __, child) {
                           return SlideTransition(
@@ -159,13 +172,14 @@ class _MyMainPageState extends State<MyMainPage> {
                   PageRouteBuilder(
                     pageBuilder: (_, __, ___) => BottomNavigationDemo(
                       userData: widget.userData,
-                      one: CharidyWidget(userData: widget.userData),
+                      one: CharidyWidget(userData: widget.userData,
+                      onSuccess:  _fetchCharidyData,),
                       two:  DataSearchWidget(
                                 apiUrl:
                                     '$PATH/charidy/getAllCharidyByuserid/${widget.userData['user']['id']}',type:'AllCharidy',
                                     sum: 'charidy_value',resion: 'resion',title: 'תאריך ביצוע התרומה',img: 'assets/images/CharidyImage.jpeg',
                                     wigetTitle: 'כל התרומות מתחילת',color: const Color.fromARGB(255, 94, 217, 98),
-                                     text: 'סה"כ תרמת השנה',DelPath: 'charidy',),
+                                     text: 'סה"כ תרמת השנה',DelPath: 'charidy',del: false,),
                       three: CharidyTableWidget(userData: widget.userData),
                     ),
                     transitionsBuilder: (_, animation, __, child) {
@@ -186,7 +200,7 @@ class _MyMainPageState extends State<MyMainPage> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Card(
-                child: AllTuether.buildTotalAccount(incomeList, poolList),
+                child: AllTuether.buildTotalAccount(incomeList, poolList ,charidyList),
               ),
             ),
           ],

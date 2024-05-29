@@ -207,7 +207,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                                     '$PATH/income/getAllConstincomesByuserid/${widget.userData['user']['id']}',
                                     type:'AllConstincomsFdb',sum: 'income_value', resion: 'source',title: "תאריך ההכנסה הראשונה",
                                     img: 'assets/images/incomeImage.jpeg',wigetTitle: 'כל ההכנסות הקבועות מתחילת' ,
-                                    color: Colors.blue, text: 'סה"כ ההכנסות הקבועות השנה ',DelPath: 'income',),
+                                    color: Colors.blue, text: 'סה"כ ההכנסות הקבועות השנה ',DelPath: 'income',del: true,),
                                   ),
                                 );
                               },
@@ -366,6 +366,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                                 ObjectId: dataList[reversedIndex]['id'].toString(),
                                 path: 'income',
                                 DEL: _fetchData,
+                                onSuccess: widget.onSuccess,
                               ),
                             ),
                           );

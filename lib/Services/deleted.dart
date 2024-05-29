@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import './env.dart';
 import 'Dialog.dart';
 
-Future<void> deleteObject(String ObjectId, String path, BuildContext context ,Function DEL) async {
+Future<void> deleteObject(String ObjectId, String path, BuildContext context ,Function DEL , Function ?  onSuccess) async {
   try {
     String url = '$PATH/$path/remove/$ObjectId';
     final response = await http.delete(Uri.parse(url));
@@ -13,6 +13,9 @@ Future<void> deleteObject(String ObjectId, String path, BuildContext context ,Fu
     if (response.statusCode == 200) {
       DialogService.showMessageDialog(context,"הצלחה" , "הנתונים הוסרו בהצלחה", Colors.green );
       DEL();
+       if (onSuccess != null) {
+        onSuccess();
+      }
     } else {
       DialogService.showMessageDialog(context,"אופס!" , " אירעה שגיאה במחיקת הנתונים ", Colors.red);
     }
@@ -25,12 +28,16 @@ class DelWidget extends StatelessWidget {
   final String ObjectId;
   final String path;
   Function DEL;
+  Function ? onSuccess ;
 
    DelWidget({
     super.key,
     required this.ObjectId,
     required this.path,
     required this.DEL,
+    this.onSuccess,
+
+
   });
 
   @override
@@ -54,7 +61,7 @@ class DelWidget extends StatelessWidget {
               child: const Text( style: TextStyle(fontSize: 20), 'כן'),
               onPressed: () {
                 Navigator.of(context).pop(); 
-                deleteObject(ObjectId, path, context , DEL);
+                deleteObject(ObjectId, path, context , DEL , onSuccess);
               },
             ),
             TextButton(

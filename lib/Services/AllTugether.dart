@@ -7,9 +7,10 @@ class AllTuether {
     return NumberFormat('#,###').format(number);
   }
 
-  static Widget buildTotalAccount(List<dynamic> incomeList ,List<dynamic> poolList) {
+  static Widget buildTotalAccount(List<dynamic> incomeList ,List<dynamic> poolList , List<dynamic> charidyList) {
     double totalIncome = 0;
     double totalPool = 0;
+    double totalCharidy = 0;
     bool isFirstAppLaunch = true;
 
     for (var data in incomeList) {
@@ -19,8 +20,11 @@ class AllTuether {
     for (var data in poolList) {
       totalPool += double.parse(data['pool_value']);
     }
+    for (var data in charidyList) {
+      totalPool += double.parse(data['charidy_value']);
+    }
 
-    double accountStatus = totalIncome - totalPool;
+    double accountStatus = totalIncome - totalPool - totalCharidy;
     double tenPercent = totalIncome * 0.1;
 
     if (accountStatus < 0 && isFirstAppLaunch) {
@@ -40,7 +44,7 @@ class AllTuether {
       alignment: Alignment.center,
       child: Center(
         child: Text(
-          'מצב חשבונך הוא: ${addCommasToNumber(accountStatus)} ש"ח     ( סה"כ מעשרות : ${addCommasToNumber(tenPercent)} ש"ח  )',
+          'מצב חשבונך הוא: ${addCommasToNumber(accountStatus)} ש"ח                                       ( סה"כ מעשרות : ${addCommasToNumber(tenPercent)} ש"ח  )',
           textAlign: TextAlign.center,
           style: const TextStyle(
             color:  Colors.black,

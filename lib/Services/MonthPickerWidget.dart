@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-
 class MonthPickerWidget extends StatefulWidget {
   final Function(String) onMonthSelected;
 
@@ -13,11 +12,10 @@ class MonthPickerWidget extends StatefulWidget {
 
 class _MonthPickerWidgetState extends State<MonthPickerWidget> {
   late String _selectedMonth;
-  
-  
+
   final Map<String, String> monthTranslations = {
-    'January':' 1/${DateFormat.y().format(DateTime.now())} (ינואר)',
-    'February':' 2/${DateFormat.y().format(DateTime.now())} (פברואר)',
+    'January': ' 1/${DateFormat.y().format(DateTime.now())} (ינואר)',
+    'February': ' 2/${DateFormat.y().format(DateTime.now())} (פברואר)',
     'March': ' 3/${DateFormat.y().format(DateTime.now())} (מרץ)',
     'April': ' 4/${DateFormat.y().format(DateTime.now())} (אפריל)',
     'May': ' 5/${DateFormat.y().format(DateTime.now())} (מאי)',
@@ -33,8 +31,7 @@ class _MonthPickerWidgetState extends State<MonthPickerWidget> {
   @override
   void initState() {
     super.initState();
-    DateTime now = DateTime.now();
-    _selectedMonth = DateFormat.MMMM().format(now);
+_selectedMonth = MonthProvider.getMonths()[1];
   }
 
   @override
@@ -52,7 +49,7 @@ class _MonthPickerWidgetState extends State<MonthPickerWidget> {
       items: months.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
-          child: Text(monthTranslations[value] ?? value), 
+          child: Text(monthTranslations[value] ?? value),
         );
       }).toList(),
     );
@@ -65,7 +62,7 @@ class MonthProvider {
     List<String> months = [];
 
     for (int i = now.month; i <= 12; i++) {
-    String month = DateFormat.MMMM().format(DateTime(now.year, i, 1));
+      String month = DateFormat.MMMM().format(DateTime(now.year, i, 1));
       months.add(month);
     }
 
