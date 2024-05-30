@@ -4,6 +4,7 @@ import 'dart:convert';
 import '../Services/Sum.dart';
 import '../Services/titleForCharidyTable.dart';
 import '../Services/env.dart';
+import '../Services/pickcher.dart';
 
 class CharidyTableWidget extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -108,7 +109,7 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('שלום ${widget.userData['user']['name']}'),
+        title: CircularImageSelectionWidget(text: widget.userData['user']['name'] ,)
       ),
       body:Stack(
         children: [ 
@@ -182,7 +183,7 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
               Center(
                   child: All.buildTotalIncome(
                       dataListIncomeOnly,
-                      'סך המעשרות הכולל',
+                      'סך המעשרות החודשי',
                       'income_value',
                       const Color.fromARGB(255, 234, 215, 36))),
               const SizedBox(
@@ -250,7 +251,7 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
               Center(
                   child: All.buildTotalIncome(
                       dataListCharidy,
-                      'סך הצדקה הכולל',
+                      'סך הצדקה החודשי',
                       'charidy_value',
                       const Color.fromARGB(255, 234, 215, 36))),
             ],

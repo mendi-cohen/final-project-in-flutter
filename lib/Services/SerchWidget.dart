@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import './Sum.dart';
 import './deleted.dart';
+import './pickcher.dart';
 
 class DataSearchWidget extends StatefulWidget {
   final String apiUrl;
@@ -18,6 +19,7 @@ class DataSearchWidget extends StatefulWidget {
   final String DelPath;
   final bool del;
   final bool? subject;
+   final Map<String, dynamic> userData;
 
   const DataSearchWidget({
     super.key,
@@ -33,6 +35,7 @@ class DataSearchWidget extends StatefulWidget {
     required this.DelPath,
     required this.del,
     this.subject,
+    required this.userData,
   });
 
   @override
@@ -138,9 +141,7 @@ class _DataSearchWidgetState extends State<DataSearchWidget> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          '${widget.wigetTitle}  ${DateFormat.y().format(DateTime.now())}',
-        ),
+        title: CircularImageSelectionWidget(text: widget.userData['user']['name'] ,)
       ),
       body: Stack(
         children: [
@@ -154,6 +155,34 @@ class _DataSearchWidgetState extends State<DataSearchWidget> {
           ),
           Column(
             children: [
+            Padding(
+  padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 8.0),
+  child: Container(
+    padding: const EdgeInsets.all(16.0),
+    decoration: BoxDecoration(
+      color: Colors.white.withOpacity(0.8),
+      borderRadius: BorderRadius.circular(12),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.2),
+          spreadRadius: 2,
+          blurRadius: 5,
+          offset: const Offset(0, 3),
+        ),
+      ],
+    ),
+    child: Text(
+      '${widget.wigetTitle}  ${DateFormat.y().format(DateTime.now())}',
+      style: TextStyle(
+        fontSize: 26,
+        fontWeight: FontWeight.bold,
+        color: widget.color,
+      ),
+      textAlign: TextAlign.center,
+    ),
+  ),
+),
+
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(

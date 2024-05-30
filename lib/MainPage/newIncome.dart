@@ -10,6 +10,7 @@ import '../Services/deleted.dart';
 import '../Services/Token.dart';
 import '../Services/env.dart';
 import '../Services/SerchWidget.dart';
+import '../Services/pickcher.dart';
 
 class IncomeEntryWidget extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -139,7 +140,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('  שלום לך ${widget.userData['user']['name']}'),
+        title: CircularImageSelectionWidget(text: widget.userData['user']['name'] ,)
       ),
       body: Stack(
         children: [
@@ -203,6 +204,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => DataSearchWidget(
+                                       userData: widget.userData,
                                 apiUrl:
                                     '$PATH/income/getAllConstincomesByuserid/${widget.userData['user']['id']}',
                                     type:'AllConstincomsFdb',sum: 'income_value', resion: 'source',title: "תאריך ההכנסה הראשונה",
@@ -262,7 +264,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                   const SizedBox(
                     height: 20,
                   ),
-                  All.buildTotalIncome(dataList, 'סך ההכנסות הכולל',
+                  All.buildTotalIncome(dataList, 'סך ההכנסות החודשי',
                       'income_value', Colors.blue),
                   const SizedBox(
                     height: 10,

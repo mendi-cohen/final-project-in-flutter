@@ -24,12 +24,6 @@ class _HebrewDateWidgetState extends State<HebrewDateWidget> {
     _notificationService.initNotification();
   }
 
-  void showNotification() {
-    _notificationService.showNotification(
-      title: 'כל הכבוד!',
-      body: 'עברתם לוויידג\'ט של הצ\'רדי!',
-    );
-  }
 
   Future<List<Map<String, dynamic>>> _fetchHebrewDate() async {
     final url = Uri.parse(
@@ -88,7 +82,7 @@ class _HebrewDateWidgetState extends State<HebrewDateWidget> {
                 final date = item['date'];
                 final itemDate = DateTime.parse(item['date']);
                 final now = DateTime.now();
-                final isPastDate = itemDate.isAfter(now);
+                final isPastDate = itemDate.isBefore(now);
 
                 return Card(
                   elevation: 3,
@@ -127,7 +121,7 @@ class _HebrewDateWidgetState extends State<HebrewDateWidget> {
                                       'התאריך הזה כבר עבר ולא ניתן לתרום בו... כמובן אבל שתמיד אפשר ורצוי לקיים מצוות הצדקה בכל זמן ומקום !',
                                       style: TextStyle(
                                         fontSize:
-                                            18, // קביעת גודל גופן גדול יותר כאן
+                                            18, 
                                       )),
                                   actions: <Widget>[
                                     TextButton(
@@ -153,7 +147,7 @@ class _HebrewDateWidgetState extends State<HebrewDateWidget> {
                                     ' קדימה רוץ לקיים מצוות אלוקיך מתוך שמחה ותקבל כפליים ויותר בחזרה !! ',
                                     style: TextStyle(
                                       fontSize:
-                                          18, // קביעת גודל גופן גדול יותר כאן
+                                          18, 
                                     ),
                                   ),
                                   actions: <Widget>[
@@ -172,7 +166,6 @@ class _HebrewDateWidgetState extends State<HebrewDateWidget> {
                                                 BottomNavigationDemo(
                                               userData: widget.userData,
                                               one: CharidyWidget(
-                                                  onSuccess: showNotification,
                                                   userData: widget.userData),
                                               two: HebrewDateWidget(
                                                   userData: widget.userData),

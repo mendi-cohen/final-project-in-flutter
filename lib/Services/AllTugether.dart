@@ -21,7 +21,7 @@ class AllTuether {
       totalPool += double.parse(data['pool_value']);
     }
     for (var data in charidyList) {
-      totalPool += double.parse(data['charidy_value']);
+      totalCharidy += double.parse(data['charidy_value']);
     }
 
     double accountStatus = totalIncome - totalPool - totalCharidy;

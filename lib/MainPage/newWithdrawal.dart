@@ -8,7 +8,7 @@ import '../Services/deleted.dart';
 import '../Services/Token.dart';
 import '../Services/env.dart';
 import '../Services/SerchWidget.dart';
-
+import '../Services/pickcher.dart';
 
 class withdrawalWidget extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -147,7 +147,7 @@ class withdrawalWidgetState extends State<withdrawalWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('  שלום לך ${widget.userData['user']['name']}'),
+        title: CircularImageSelectionWidget(text: widget.userData['user']['name'] ,)
       ),
       body: Stack(
         children: [
@@ -211,6 +211,7 @@ class withdrawalWidgetState extends State<withdrawalWidget> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => DataSearchWidget(
+                                       userData: widget.userData,
                                 apiUrl:
                                     '$PATH/pool/getAllConstpoolsByuserid/${widget.userData['user']['id']}',
                                     type:'AllConstpoolsFdb',sum: 'pool_value', resion: 'resion',title: "תאריך ההוצאה הראשונה",
@@ -269,7 +270,7 @@ class withdrawalWidgetState extends State<withdrawalWidget> {
                   ),
                   const SizedBox(height: 20),
                   All.buildTotalIncome(
-                      dataList, 'סך ההוצאות הכולל', 'pool_value', Colors.red),
+                      dataList, 'סך ההוצאות החודשי', 'pool_value', Colors.red),
                   const SizedBox(
                     height: 10,
                   ),

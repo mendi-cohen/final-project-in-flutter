@@ -12,13 +12,13 @@ import '../Services/Token.dart';
 import '../Services/env.dart';
 import '../Services/SpecialDate.dart';
 import '../Services/SerchWidget.dart';
-
+import '../Services/pickcher.dart';
 
 
 class CharidyWidget extends StatefulWidget {
   final Map<String, dynamic> userData;
-  final Function()  onSuccess;
-  const CharidyWidget({super.key, required this.userData, required this.onSuccess});
+  final Function()?  onSuccess;
+  const CharidyWidget({super.key, required this.userData,  this.onSuccess});
   @override
   _CharidyWidgetState createState() => _CharidyWidgetState();
 }
@@ -210,7 +210,9 @@ class _CharidyWidgetState extends State<CharidyWidget> {
       setState(() {
         _selectedOption = 'חד פעמי';
         _fetchData();
-        widget.onSuccess();
+           if (widget.onSuccess != null) {
+            widget.onSuccess!();
+        }
       });
     } else {
       await DialogService.showMessageDialog(
@@ -235,7 +237,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('  שלום לך ${widget.userData['user']['name']}'),
+        title: CircularImageSelectionWidget(text: widget.userData['user']['name'] ,)
       ),
       body: Stack(
         children: [
@@ -316,6 +318,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => DataSearchWidget(
+                                      userData: widget.userData,
                                 apiUrl:
                                     '$PATH/charidy/getAllConstCharidyByuserid/${widget.userData['user']['id']}',
                                     type:'AllConstCharidy',sum: 'charidy_value', resion: 'resion',title: "תאריך התרומה הראשונה",
@@ -452,7 +455,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                   ),
                   All.buildTotalIncome(
                     dataList,
-                    'סך התרומות הכולל',
+                    'סך התרומות החודשי',
                     'charidy_value',
                     const Color.fromARGB(255, 27, 222, 73),
                   ),
