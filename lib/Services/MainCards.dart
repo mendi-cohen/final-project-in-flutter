@@ -6,10 +6,10 @@ class EnterCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const EnterCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,19 +38,20 @@ class OptionCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const OptionCard({
-    Key? key,
+   super.key,
     required this.title,
     required this.icon,
     required this.onTap,
-  }) : super(key: key);
+  }); 
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Card(
+        color: const Color.fromARGB(255, 194, 221, 44),
         margin: const EdgeInsets.all(10),
-        elevation: 4, // צל
+        elevation: 4, 
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: Column(
@@ -59,7 +60,7 @@ class OptionCard extends StatelessWidget {
               Icon(
                 icon,
                 size: 40,
-                color: const Color.fromARGB(255, 194, 221, 44),
+                color:const Color.fromARGB(255, 16, 16, 13),
               ),
               const SizedBox(height: 15 , width: 155,),
               Text(

@@ -14,6 +14,7 @@ import './charidy.dart';
 import './CharidyTable.dart';
 import '../Services/SerchWidget.dart';
 import '../Services/pickcher.dart';
+import '../Services/AnimationTitle.dart';
 
 class MyMainPage extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -225,7 +226,8 @@ class _MyMainPageState extends State<MyMainPage> {
                     );
                   },
                 ),
-                const SizedBox(height: 320),
+                TextAnimationWidget(title: ' שלום ${widget.userData['user']['name']} כמה נחסוך היום?',fontSize: 20,),
+                const SizedBox(height: 300),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Card(

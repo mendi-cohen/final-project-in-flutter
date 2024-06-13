@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'Log-in.dart';
 import './Sign-in.dart';
+import '../Services/AnimationTitle.dart';
 
 
 
@@ -50,7 +51,7 @@ class _EnterState extends State<EnterPage> {
                 style: ElevatedButton.styleFrom(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                  backgroundColor: const Color.fromARGB(255, 82, 188, 230),
+                  backgroundColor: const Color.fromRGBO(221, 147, 78, 1),
                   elevation: 10,
                   shadowColor: Colors.grey,
                   shape: RoundedRectangleBorder(
@@ -66,7 +67,8 @@ class _EnterState extends State<EnterPage> {
                 ),
               ),
             ),
-           
+           const SizedBox(height: 120,),
+           TextAnimationWidget(title: "ברוכים הבאים!",),
             Expanded(
               child: Align(
                 alignment: Alignment.bottomCenter,
@@ -75,7 +77,7 @@ class _EnterState extends State<EnterPage> {
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        backgroundColor:const Color.fromARGB(255, 82, 188, 230),
+                        backgroundColor:const Color.fromRGBO(221, 147, 78, 1),
                         title: const Center(
                             child: Text(
                           'כניסה',
@@ -106,7 +108,7 @@ class _EnterState extends State<EnterPage> {
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 130, vertical: 24),
-                    backgroundColor: const Color.fromARGB(255, 82, 188, 230),
+                    backgroundColor: Color.fromRGBO(221, 147, 78, 1),
                     elevation: 5,
                     shadowColor: Colors.grey,
                     shape: RoundedRectangleBorder(
