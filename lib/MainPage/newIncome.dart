@@ -8,9 +8,10 @@ import '../Services/Sum.dart';
 import '../Services/Dialog.dart';
 import '../Services/deleted.dart';
 import '../Services/Token.dart';
-import '../Services/env.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../Services/SerchWidget.dart';
 import '../Services/pickcher.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class IncomeEntryWidget extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -67,7 +68,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
   }
 
   Future<void> _submitDataToDatabase() async {
-    final url = Uri.parse('$PATH/income/sendincome');
+    final url = Uri.parse('${dotenv.env['PATH']}/income/sendincome');
 
     final amount = _amountController.text;
     final source = _sourceController.text;
@@ -126,7 +127,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
 
   Future<void> _fetchData() async {
     final response = await http.get(Uri.parse(
-        '$PATH/income/getincomeByuser_id/${widget.userData['user']['id']}'));
+        '${dotenv.env['PATH']}/income/getincomeByuser_id/${widget.userData['user']['id']}'));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['incomsFdb'];
       setState(() {
@@ -206,7 +207,7 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                                     builder: (context) => DataSearchWidget(
                                        userData: widget.userData,
                                 apiUrl:
-                                    '$PATH/income/getAllConstincomesByuserid/${widget.userData['user']['id']}',
+                                    '${dotenv.env['PATH']}/income/getAllConstincomesByuserid/${widget.userData['user']['id']}',
                                     type:'AllConstincomsFdb',sum: 'income_value', resion: 'source',title: "תאריך ההכנסה הראשונה",
                                     img: 'assets/images/incomeImage.jpeg',wigetTitle: 'כל ההכנסות הקבועות מתחילת' ,
                                     color: Colors.blue, text: 'סה"כ ההכנסות הקבועות השנה ',DelPath: 'income',del: true,),

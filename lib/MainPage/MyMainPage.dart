@@ -9,7 +9,7 @@ import 'dart:convert';
 import '../Services/AllTugether.dart';
 import 'package:localstorage/localstorage.dart';
 import './BottomNavigation.dart';
-import '../Services/env.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import './charidy.dart';
 import './CharidyTable.dart';
 import '../Services/SerchWidget.dart';
@@ -38,7 +38,7 @@ class _MyMainPageState extends State<MyMainPage> {
 
   Future<void> _fetchPoolData() async {
     final response = await http.get(Uri.parse(
-        '$PATH/pool/getpoolByuser_id/${widget.userData['user']['id']}'));
+        '${dotenv.env['PATH']}/pool/getpoolByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final token = localStorage.getItem('Token');
@@ -53,7 +53,7 @@ class _MyMainPageState extends State<MyMainPage> {
 
   Future<void> _fetchIncomeData() async {
     final response = await http.get(Uri.parse(
-        '$PATH/income/getincomeByuser_id/${widget.userData['user']['id']}'));
+        '${dotenv.env['PATH']}/income/getincomeByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['incomsFdb'];
@@ -66,7 +66,7 @@ class _MyMainPageState extends State<MyMainPage> {
 
   Future<void> _fetchCharidyData() async {
     final response = await http.get(Uri.parse(
-        '$PATH/charidy/getcharidyByuser_id/${widget.userData['user']['id']}'));
+        '${dotenv.env['PATH']}/charidy/getcharidyByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['CharidyFdb'];
@@ -113,7 +113,7 @@ class _MyMainPageState extends State<MyMainPage> {
                           two: DataSearchWidget(
                             userData: widget.userData,
                             apiUrl:
-                                '$PATH/income/getAllincomesByuserid/${widget.userData['user']['id']}',
+                                '${dotenv.env['PATH']}/income/getAllincomesByuserid/${widget.userData['user']['id']}',
                             type: 'AllincomsFdb',
                             sum: 'income_value',
                             resion: 'source',
@@ -156,7 +156,7 @@ class _MyMainPageState extends State<MyMainPage> {
                           two: DataSearchWidget(
                              userData: widget.userData,
                             apiUrl:
-                                '$PATH/pool/getAllpoolByuserid/${widget.userData['user']['id']}',
+                                '${dotenv.env['PATH']}/pool/getAllpoolByuserid/${widget.userData['user']['id']}',
                             type: 'AllPoolFdb',
                             sum: 'pool_value',
                             resion: 'resion',
@@ -199,7 +199,7 @@ class _MyMainPageState extends State<MyMainPage> {
                           two: DataSearchWidget(
                              userData: widget.userData,
                             apiUrl:
-                                '$PATH/charidy/getAllCharidyByuserid/${widget.userData['user']['id']}',
+                                '${dotenv.env['PATH']}/charidy/getAllCharidyByuserid/${widget.userData['user']['id']}',
                             type: 'AllCharidy',
                             sum: 'charidy_value',
                             resion: 'resion',

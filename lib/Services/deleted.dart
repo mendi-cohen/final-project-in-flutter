@@ -2,12 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import './env.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'Dialog.dart';
 
 Future<void> deleteObject(String ObjectId, String path, BuildContext context ,Function DEL , Function ?  onSuccess) async {
   try {
-    String url = '$PATH/$path/remove/$ObjectId';
+    String url = '${dotenv.env['PATH']}/${dotenv.env['PATH']}/remove/$ObjectId';
     final response = await http.delete(Uri.parse(url));
 
     if (response.statusCode == 200) {

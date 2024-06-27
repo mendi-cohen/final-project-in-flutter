@@ -9,7 +9,7 @@ import '../Services/Dialog.dart';
 import '../Services/deleted.dart';
 import '../Services/MonthPickerWidget.dart';
 import '../Services/Token.dart';
-import '../Services/env.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../Services/SpecialDate.dart';
 import '../Services/SerchWidget.dart';
 import '../Services/pickcher.dart';
@@ -102,7 +102,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
   }
 
   Future<void> _submitDataToDatabase() async {
-    final url = Uri.parse('$PATH/charidy/sendthecharidy');
+    final url = Uri.parse('${dotenv.env['PATH']}/charidy/sendthecharidy');
     final type = _isMaaserSelected ? 'מעשר' : 'צדקה';
     final amount = _amountController.text;
     final source = _sourceController.text;
@@ -222,7 +222,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
 
   Future<void> _fetchData() async {
     final response = await http.get(Uri.parse(
-        '$PATH/charidy/getcharidyByuser_id/${widget.userData['user']['id']}'));
+        '${dotenv.env['PATH']}/charidy/getcharidyByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['CharidyFdb'];
@@ -320,7 +320,7 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                                     builder: (context) => DataSearchWidget(
                                       userData: widget.userData,
                                 apiUrl:
-                                    '$PATH/charidy/getAllConstCharidyByuserid/${widget.userData['user']['id']}',
+                                    '${dotenv.env['PATH']}/charidy/getAllConstCharidyByuserid/${widget.userData['user']['id']}',
                                     type:'AllConstCharidy',sum: 'charidy_value', resion: 'resion',title: "תאריך התרומה הראשונה",
                                     img: 'assets/images/CharidyImage.jpeg',wigetTitle: 'כל התרומות הקבועות מתחילת' ,
                                     color: const Color.fromARGB(255, 40, 232, 43), text: 'סה"כ התרומות הקבועות השנה ',

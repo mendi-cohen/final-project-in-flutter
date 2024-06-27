@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'EnterUsers/EnterPage.dart';
 import 'Services/Notification.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 
 
-
-void main() {
+ void  main () async {
   WidgetsFlutterBinding.ensureInitialized();
   NotificationService().initNotification();
+  await dotenv.load(); 
+
+
   
   runApp(const MyApp());
 }

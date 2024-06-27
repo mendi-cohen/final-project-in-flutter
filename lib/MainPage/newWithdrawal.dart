@@ -6,7 +6,7 @@ import '../Services/Sum.dart';
 import '../Services/Dialog.dart';
 import '../Services/deleted.dart';
 import '../Services/Token.dart';
-import '../Services/env.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../Services/SerchWidget.dart';
 import '../Services/pickcher.dart';
 
@@ -68,7 +68,7 @@ class withdrawalWidgetState extends State<withdrawalWidget> {
   //// שליחת משיכה למסד הנתונים
 
   Future<void> _submitDataToDatabase() async {
-    final url = Uri.parse('$PATH/pool/sendthepool');
+    final url = Uri.parse('${dotenv.env['PATH']}/pool/sendthepool');
 
     final amount = _amountController.text;
     final source = _sourceController.text;
@@ -132,7 +132,7 @@ class withdrawalWidgetState extends State<withdrawalWidget> {
 
   Future<void> _fetchData() async {
     final response = await http.get(Uri.parse(
-        '$PATH/pool/getpoolByuser_id/${widget.userData['user']['id']}'));
+        '${dotenv.env['PATH']}/pool/getpoolByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['PoolFdb'];
@@ -213,7 +213,7 @@ class withdrawalWidgetState extends State<withdrawalWidget> {
                                     builder: (context) => DataSearchWidget(
                                        userData: widget.userData,
                                 apiUrl:
-                                    '$PATH/pool/getAllConstpoolsByuserid/${widget.userData['user']['id']}',
+                                    '${dotenv.env['PATH']}/pool/getAllConstpoolsByuserid/${widget.userData['user']['id']}',
                                     type:'AllConstpoolsFdb',sum: 'pool_value', resion: 'resion',title: "תאריך ההוצאה הראשונה",
                                     img: 'assets/images/poolImage.jpeg',wigetTitle: 'כל ההוצאות מתחילת' ,
                                     color: Colors.red, text: 'סה"כ ההוצאות הקבועות השנה ',DelPath: 'pool',del: true,),

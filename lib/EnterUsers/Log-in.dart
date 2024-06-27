@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../MainPage/MyMainPage.dart';
 import 'package:localstorage/localstorage.dart';
-import '../Services/env.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 
 
@@ -26,7 +26,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _fetchStoredPasswords() async {
-    final url = Uri.parse('$PATH/enterUser');
+    final url = Uri.parse('${dotenv.env['PATH']}/enterUser');
     final password = _passwordController.text;
     final email = _emailController.text;
     WidgetsFlutterBinding.ensureInitialized();

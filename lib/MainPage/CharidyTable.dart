@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../Services/Sum.dart';
 import '../Services/titleForCharidyTable.dart';
-import '../Services/env.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../Services/pickcher.dart';
 
 class CharidyTableWidget extends StatefulWidget {
@@ -22,7 +22,7 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
 
   Future<void> _fetchDataMaaser() async {
     final response = await http.get(Uri.parse(
-        '$PATH/charidy/getMaaserByuser_id/${widget.userData['user']['id']}'));
+        '${dotenv.env['PATH']}/charidy/getMaaserByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['MaaserFdb'];
@@ -35,7 +35,7 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
 
   Future<void> _fetchDataIncome() async {
     final response = await http.get(Uri.parse(
-        '$PATH/income/getincomeByuser_id/${widget.userData['user']['id']}'));
+        '${dotenv.env['PATH']}/income/getincomeByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['incomsFdb'];
@@ -48,7 +48,7 @@ class _CharidyTableWidgetState extends State<CharidyTableWidget> {
 
   Future<void> _fetchDataCharidy() async {
     final response = await http.get(Uri.parse(
-        '$PATH/charidy/getOnlyCharidyByuser_id/${widget.userData['user']['id']}'));
+        '${dotenv.env['PATH']}/charidy/getOnlyCharidyByuser_id/${widget.userData['user']['id']}'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['OnlyCharidy'];

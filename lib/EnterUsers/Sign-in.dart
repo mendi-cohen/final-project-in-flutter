@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import './WelcomeTitle .dart';
-import '../Services/env.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 
 class RegistrationForm extends StatefulWidget {
@@ -17,7 +17,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
   String _registrationStatus = '';
 
   Future<void> _submitForm() async {
-    final url = Uri.parse('$PATH/saveUser');
+    final url = Uri.parse('${dotenv.env['PATH']}/saveUser');
 
     final username = _usernameController.text;
     final password = _passwordController.text;
