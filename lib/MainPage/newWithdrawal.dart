@@ -375,6 +375,8 @@ class withdrawalWidgetState extends State<withdrawalWidget> {
                                 path: 'pool',
                                 DEL: _fetchData,
                                 onSuccess: widget.onSuccess,
+                                type: dataList[reversedIndex]['monstli'],
+                                time:dataList[reversedIndex]['createdAt'],
                               ),
                             ),
                           );

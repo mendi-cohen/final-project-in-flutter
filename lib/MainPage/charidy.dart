@@ -557,6 +557,8 @@ class _CharidyWidgetState extends State<CharidyWidget> {
                                     path: 'charidy',
                                     DEL: _fetchData,
                                     onSuccess: widget.onSuccess,
+                                    type: item['type'],
+                                    time: item['createdAt'],
                                   ),
                                 ),
                               ));

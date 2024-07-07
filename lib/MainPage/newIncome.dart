@@ -370,6 +370,8 @@ class _IncomeEntryWidgetState extends State<IncomeEntryWidget> {
                                 path: 'income',
                                 DEL: _fetchData,
                                 onSuccess: widget.onSuccess,
+                                type: dataList[reversedIndex]['monstli'] ,
+                                time:dataList[reversedIndex]['createdAt'],
                               ),
                             ),
                           );

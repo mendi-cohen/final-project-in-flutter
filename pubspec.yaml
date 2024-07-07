@@ -81,6 +81,7 @@ flutter:
     - assets/images/CharidyImage.jpeg
     - assets/images/maaserImage.jpeg
     - assets/images/test-1.jpg
+    - assets/.env
    
 
   # An image asset can refer to one or more resolution-specific "variants", see
