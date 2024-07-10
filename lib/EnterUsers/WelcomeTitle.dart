@@ -8,7 +8,7 @@ class WelcomeTitle extends StatelessWidget {
     return Container(
       padding:const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
-        color: Colors.blueAccent, // צבע רקע
+        color: const Color.fromARGB(255, 246, 231, 94), // צבע רקע
         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(20.0)), // פינות מעוגלות
         boxShadow: [
           BoxShadow(
@@ -26,7 +26,7 @@ class WelcomeTitle extends StatelessWidget {
             'ברוך הבא למועדון הגדולים',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.white, // צבע טקסט
+              color: const Color.fromARGB(255, 8, 7, 7), // צבע טקסט
               fontSize: 30.0, // גודל טקסט
               fontWeight: FontWeight.bold, // עובי הטקסט
               letterSpacing: 1.5, // מרווח בין אותיות
@@ -43,7 +43,7 @@ class WelcomeTitle extends StatelessWidget {
             'כמה נשמח שתצטרף למשפחה',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.white, // צבע טקסט
+              color: const Color.fromARGB(255, 9, 6, 6), // צבע טקסט
               fontSize: 24.0, // גודל טקסט
               fontStyle: FontStyle.italic, // סגנון טקסט
               shadows: [
